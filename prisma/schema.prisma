@@ -22,6 +22,22 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
+  stores    Store[]
 
   @@map("user")
+}
+
+model Store {
+  id     String @id @default(uuid())
+  name   String
+  avatar String @default("https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg")
+  userId String @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("store")
 }

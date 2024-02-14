@@ -23,7 +23,6 @@ export class RepositoryFactory<K, T = void, J = void> {
       },
       data: {
         ...data,
-        updatedAt: new Date(),
       },
     });
   }
