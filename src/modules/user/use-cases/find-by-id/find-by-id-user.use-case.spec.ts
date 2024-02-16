@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { userModuleMock } from '../../user.module';
-import { PrismaService } from 'src/database/prisma/prisma.service';
 import { userMock } from 'src/__mocks__';
 import { FindByIdUserUseCase } from './find-by-id-user.use-case';
 import { HttpException } from '@nestjs/common';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
 
 describe('FindByIdUserUseCase', () => {
   let useCase: FindByIdUserUseCase;

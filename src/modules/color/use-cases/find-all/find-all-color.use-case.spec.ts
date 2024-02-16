@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import { colorMock, queryParamsDtoMock } from 'src/__mocks__';
 import { FindAllColorUseCase } from './find-all-color.use-case';
 import { colorModuleMock } from '../../color.module';

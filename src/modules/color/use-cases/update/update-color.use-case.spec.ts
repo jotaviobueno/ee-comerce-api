@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import { colorMock, updateColorDtoMock } from 'src/__mocks__';
 import { HttpException } from '@nestjs/common';
 import { colorModuleMock } from '../../color.module';

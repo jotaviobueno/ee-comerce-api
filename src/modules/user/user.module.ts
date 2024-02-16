@@ -8,10 +8,11 @@ import {
   UpdateUserUseCase,
   SoftDeleteUserUseCase,
 } from './use-cases';
-import { PrismaModule } from 'src/database/prisma/prisma.module';
+import { PrismaModule } from 'src/common/database/prisma/prisma.module';
+import { CacheModule } from 'src/common/cache/cache.module';
 
 export const userModuleMock = {
-  imports: [PrismaModule],
+  imports: [PrismaModule, CacheModule],
   controllers: [UserController],
   providers: [
     CreateUserUseCase,

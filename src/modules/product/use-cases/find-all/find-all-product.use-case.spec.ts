@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import { productMock, queryParamsDtoMock } from 'src/__mocks__';
 import { productModuleMock } from '../../product.module';
 import { FindAllProductUseCase } from './find-all-product.use-case';

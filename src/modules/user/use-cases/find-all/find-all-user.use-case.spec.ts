@@ -1,19 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { userModuleMock } from '../../user.module';
-import { PrismaService } from 'src/database/prisma/prisma.service';
 import { queryParamsDtoMock, userMock } from 'src/__mocks__';
 import { FindAllUserUseCase } from './find-all-user.use-case';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
+import { CacheService } from 'src/common/cache/cache.service';
 
 describe('FindAllUserUseCase', () => {
   let useCase: FindAllUserUseCase;
   let moduleRef: TestingModule;
   let prismaService: PrismaService;
+  let cache: CacheService;
 
   beforeEach(async () => {
     moduleRef = await Test.createTestingModule(userModuleMock).compile();
 
     prismaService = moduleRef.get<PrismaService>(PrismaService);
     useCase = moduleRef.get<FindAllUserUseCase>(FindAllUserUseCase);
+    cache = moduleRef.get<CacheService>(CacheService);
   });
 
   it('should be defined', () => {
@@ -27,6 +30,9 @@ describe('FindAllUserUseCase', () => {
   });
 
   it('should be find All', async () => {
+    jest.spyOn(cache, 'getCache').mockResolvedValue(null);
+    jest.spyOn(cache, 'setCache').mockResolvedValue('OK');
+
     const findAll = jest
       .spyOn(prismaService.user, 'findMany')
       .mockResolvedValue([userMock]);
@@ -52,5 +58,14 @@ describe('FindAllUserUseCase', () => {
         deletedAt: true,
       },
     });
+  });
+
+  it.skip('should be find all by cache', async () => {
+    jest.spyOn(cache, 'getCache').mockResolvedValue([userMock]);
+    jest.spyOn(cache, 'setCache').mockResolvedValue('OK');
+
+    const response = await useCase.execute(queryParamsDtoMock);
+
+    expect(response).toStrictEqual([userMock]);
   });
 });

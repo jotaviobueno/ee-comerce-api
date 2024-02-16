@@ -8,7 +8,7 @@ import {
   UpdateColorUseCase,
   SoftDeleteColorUseCase,
 } from './use-cases';
-import { PrismaModule } from 'src/database/prisma/prisma.module';
+import { PrismaModule } from 'src/common/database/prisma/prisma.module';
 
 export const colorModuleMock = {
   imports: [PrismaModule],

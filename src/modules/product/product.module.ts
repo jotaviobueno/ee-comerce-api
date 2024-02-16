@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProductController } from './product.controller';
 import { ProductRepository } from './product.repository';
-import { PrismaModule } from 'src/database/prisma/prisma.module';
+import { PrismaModule } from 'src/common/database/prisma/prisma.module';
 import {
   CreateProductUseCase,
   FindAllProductUseCase,
