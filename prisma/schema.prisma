@@ -37,7 +37,218 @@ model Store {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  user User @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+  products Product[]
 
   @@map("store")
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  images      String[]  @default([])
+  price       Float
+  storeId     String    @map("store_id")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamp
+
+  store             Store             @relation(fields: [storeId], references: [id])
+  productCategories ProductCategory[]
+  skus              Sku[]
+  ratings           Rating[]
+  productSupplies   ProductSupplier[]
+
+  @@map("product")
+}
+
+model Sku {
+  id     String   @id @default(uuid())
+  width  Float
+  length Float
+  height Float
+  weight Float
+  size   SKU_SIZE
+  batch  String
+
+  costPrice Float @map("cost_price")
+
+  quantity Int @default(0)
+
+  productId String  @map("product_id")
+  colorId   String? @map("color_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  product  Product   @relation(fields: [productId], references: [id])
+  color    Color?    @relation(fields: [colorId], references: [id])
+  areaSkus AreaSku[]
+  stock    Stock[]
+
+  @@map("sku")
+}
+
+enum SKU_SIZE {
+  XXS
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  XXXL
+  VARIETY
+}
+
+enum STOCK_TYPE {
+  INCOME
+  OUTCOME
+}
+
+model Stock {
+  id          String     @id @default(uuid())
+  description String?
+  type        STOCK_TYPE
+  quantity    Int
+  skuId       String     @map("sku_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  sku Sku @relation(fields: [skuId], references: [id])
+
+  @@map("stock")
+}
+
+model Color {
+  id   String @id @default(uuid())
+  name String
+  hex  String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  skus Sku[]
+
+  @@map("color")
+}
+
+model Rating {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  stars       Int
+  productId   String @map("product_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("rating")
+}
+
+model ProductCategory {
+  id         String @id @default(uuid())
+  categoryId String @map("category_id")
+  productId  String @map("product_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  category Category @relation(fields: [categoryId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@map("product_category")
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  productCategories ProductCategory[]
+
+  @@map("category")
+}
+
+model DistributionCenter {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  areas Area[]
+
+  @@map("distribution_center")
+}
+
+model AreaSku {
+  id     String @id @default(uuid())
+  area   Area   @relation(fields: [areaId], references: [id])
+  sku    Sku    @relation(fields: [skuId], references: [id])
+  areaId String
+  skuId  String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  @@map("area_sku")
+}
+
+model Area {
+  id                   String    @id @default(uuid())
+  name                 String
+  distributionCenterId String    @map("distribution_center_id")
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt            DateTime? @map("deleted_at") @db.Timestamp
+
+  distributionCenter DistributionCenter @relation(fields: [distributionCenterId], references: [id])
+  areaSkus           AreaSku[]
+
+  @@map("area")
+}
+
+model ProductSupplier {
+  id         String   @id @default(uuid())
+  product    Product  @relation(fields: [productId], references: [id])
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  productId  String
+  supplierId String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  @@map("product_supplier")
+}
+
+model Supplier {
+  id        String    @id @default(uuid())
+  name      String
+  phone     String?
+  email     String
+  cnpj      String
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  productSupplies ProductSupplier[]
+
+  @@map("supplier")
 }
