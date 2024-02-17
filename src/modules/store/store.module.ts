@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { StoreController } from './store.controller';
-import { PrismaModule } from 'src/database/prisma/prisma.module';
 import { UserModule } from '../user/user.module';
 import {
   CreateStoreUseCase,
@@ -10,9 +9,11 @@ import {
   SoftDeleteStoreUseCase,
 } from './use-cases';
 import { StoreRepository } from './store.repository';
+import { PrismaModule } from 'src/common/database/prisma/prisma.module';
+import { RedisModule } from 'src/common/redis/redis.module';
 
 export const storeModuleMock = {
-  imports: [PrismaModule, UserModule],
+  imports: [PrismaModule, UserModule, RedisModule],
   controllers: [StoreController],
   providers: [
     StoreRepository,

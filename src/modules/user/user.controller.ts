@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   CreateUserDto,
@@ -20,6 +21,7 @@ import {
   SoftDeleteUserUseCase,
   UpdateUserUseCase,
 } from './use-cases';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('user')
 export class UserController {
@@ -37,11 +39,15 @@ export class UserController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
   findAll(@Query() queryParamsDto: QueryParamsDto) {
     return this.findAllUserUseCase.execute(queryParamsDto);
   }
 
   @Get(':id')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
   findById(@Param('id') id: string) {
     return this.findByIdUserUseCase.execute(id);
   }

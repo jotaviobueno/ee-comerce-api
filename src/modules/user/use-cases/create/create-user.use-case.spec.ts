@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import bcrypt from 'bcrypt';
 import { userModuleMock } from '../../user.module';
 import { CreateUserUseCase } from './create-user.use-case';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import { createUserDtoMock, userMock } from 'src/__mocks__';
 
 describe('CreateUserUseCase', () => {

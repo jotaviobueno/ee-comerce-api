@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { userModuleMock } from '../../user.module';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import { userMock } from 'src/__mocks__';
 import { HttpException } from '@nestjs/common';
 import { SoftDeleteUserUseCase } from './soft-delete-user.use-case';
