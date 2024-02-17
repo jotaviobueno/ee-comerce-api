@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guards';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductCategoryModule } from './modules/product-category/product-category.module';
+import { RatingModule } from './modules/rating/rating.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProductCategoryModule } from './modules/product-category/product-catego
     AuthModule,
     CategoryModule,
     ProductCategoryModule,
+    RatingModule,
   ],
   providers: [
     {
