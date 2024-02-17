@@ -10,9 +10,10 @@ import {
   UpdateProductUseCase,
 } from './use-cases';
 import { StoreModule } from '../store/store.module';
+import { RedisModule } from 'src/common/redis/redis.module';
 
 export const productModuleMock = {
-  imports: [PrismaModule, StoreModule],
+  imports: [PrismaModule, StoreModule, RedisModule],
   controllers: [ProductController],
   providers: [
     ProductRepository,

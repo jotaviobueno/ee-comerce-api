@@ -18,7 +18,7 @@ export class FindByIdProductUseCase
   async execute(data: string): Promise<ProductEntity> {
     const cache = await this.cacheManager.get<ProductEntity | null>(data);
 
-    if (!cache) return cache;
+    if (cache) return cache;
 
     const product = await this.productRepository.findById(data);
 

@@ -10,9 +10,10 @@ import {
 } from './use-cases';
 import { StoreRepository } from './store.repository';
 import { PrismaModule } from 'src/common/database/prisma/prisma.module';
+import { RedisModule } from 'src/common/redis/redis.module';
 
 export const storeModuleMock = {
-  imports: [PrismaModule, UserModule],
+  imports: [PrismaModule, UserModule, RedisModule],
   controllers: [StoreController],
   providers: [
     StoreRepository,
