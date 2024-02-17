@@ -10,6 +10,7 @@ import { RedisModule } from './common/redis/redis.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guards';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthGuard } from './modules/auth/guards';
     SkuModule,
     ColorModule,
     AuthModule,
+    CategoryModule,
   ],
   providers: [
     {

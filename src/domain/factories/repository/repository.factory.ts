@@ -16,7 +16,7 @@ export class RepositoryFactory<K, T = void, J = void> {
     });
   }
 
-  update({ id, ...data }: J & { id: string }): Promise<K> {
+  update({ id, ...data }: J & { id: string }): Promise<K | null> {
     return this.prismaService[this.model].update({
       where: {
         id,
@@ -27,7 +27,7 @@ export class RepositoryFactory<K, T = void, J = void> {
     });
   }
 
-  softDelete(id: string): Promise<K> {
+  softDelete(id: string): Promise<K | null> {
     return this.prismaService[this.model].update({
       where: {
         id,

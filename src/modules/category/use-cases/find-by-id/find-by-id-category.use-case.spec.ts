@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { userModuleMock } from '../../user.module';
-import { userMock } from 'src/__mocks__';
-import { FindByIdUserUseCase } from './find-by-id-user.use-case';
+import { categoryMock } from 'src/__mocks__';
 import { HttpException } from '@nestjs/common';
 import { PrismaService } from 'src/common/database/prisma/prisma.service';
+import { FindByIdCategoryUseCase } from './find-by-id-category.use-case';
+import { categoryModuleMock } from '../../category.module';
 
-describe('FindByIdUserUseCase', () => {
-  let useCase: FindByIdUserUseCase;
+describe('FindByIdCategoryUseCase', () => {
+  let useCase: FindByIdCategoryUseCase;
   let moduleRef: TestingModule;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
-    moduleRef = await Test.createTestingModule(userModuleMock).compile();
+    moduleRef = await Test.createTestingModule(categoryModuleMock).compile();
 
     prismaService = moduleRef.get<PrismaService>(PrismaService);
-    useCase = moduleRef.get<FindByIdUserUseCase>(FindByIdUserUseCase);
+    useCase = moduleRef.get<FindByIdCategoryUseCase>(FindByIdCategoryUseCase);
   });
 
   it('should be defined', () => {
@@ -29,33 +29,22 @@ describe('FindByIdUserUseCase', () => {
 
   it('should be find by id', async () => {
     const findFirst = jest
-      .spyOn(prismaService.user, 'findFirst')
-      .mockResolvedValue(userMock);
+      .spyOn(prismaService.category, 'findFirst')
+      .mockResolvedValue(categoryMock);
 
     const response = await useCase.execute('1');
 
-    expect(response).toStrictEqual(userMock);
+    expect(response).toStrictEqual(categoryMock);
     expect(findFirst).toHaveBeenCalledWith({
       where: {
         id: '1',
         deletedAt: null,
       },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        username: true,
-        email: true,
-        avatar: true,
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
-      },
     });
   });
 
-  it('Should throw an error when not found user', async () => {
-    jest.spyOn(prismaService.user, 'findFirst').mockResolvedValue(null);
+  it('Should throw an error when not found category', async () => {
+    jest.spyOn(prismaService.category, 'findFirst').mockResolvedValue(null);
 
     const spyFind = jest.spyOn(useCase, 'execute');
 

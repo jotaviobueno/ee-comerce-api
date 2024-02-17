@@ -4,3 +4,4 @@ export * from './store';
 export * from './color';
 export * from './sku';
 export * from './product';
+export * from './category';
