@@ -1,42 +1,40 @@
+import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+  CreateProductCategoryDto,
+  UpdateProductCategoryDto,
+} from 'src/domain/dtos';
+import {
+  CreateProductCategoryUseCase,
+  FindByIdProductCategoryUseCase,
+  UpdateProductCategoryUseCase,
+} from './use-cases';
 
 @Controller('product-category')
 export class ProductCategoryController {
-  constructor() {} // private readonly productCategoryService: ProductCategoryService,
+  constructor(
+    private readonly createProductCategoryUseCase: CreateProductCategoryUseCase,
+    private readonly findByIdProductCategoryUseCase: FindByIdProductCategoryUseCase,
+    private readonly updateProductCategoryUseCase: UpdateProductCategoryUseCase,
+  ) {}
 
-  // @Post()
-  // create(@Body() createProductCategoryDto: CreateProductCategoryDto) {
-  //   return this.productCategoryService.create(createProductCategoryDto);
-  // }
+  @Post()
+  create(@Body() createProductCategoryDto: CreateProductCategoryDto) {
+    return this.createProductCategoryUseCase.execute(createProductCategoryDto);
+  }
 
-  // @Get()
-  // findAll() {
-  //   return this.productCategoryService.findAll();
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.findByIdProductCategoryUseCase.execute(id);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.productCategoryService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateProductCategoryDto: UpdateProductCategoryDto,
-  // ) {
-  //   return this.productCategoryService.update(+id, updateProductCategoryDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.productCategoryService.remove(+id);
-  // }
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateProductCategoryDto: UpdateProductCategoryDto,
+  ) {
+    return this.updateProductCategoryUseCase.execute({
+      ...updateProductCategoryDto,
+      id,
+    });
+  }
 }
