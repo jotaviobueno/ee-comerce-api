@@ -4,3 +4,4 @@ export * from './store';
 export * from './product';
 export * from './sku';
 export * from './color';
+export * from './auth';

@@ -7,6 +7,7 @@ import {
   FindByIdUserUseCase,
   UpdateUserUseCase,
   SoftDeleteUserUseCase,
+  FindByEmailUserUseCase,
 } from './use-cases';
 import { PrismaModule } from 'src/common/database/prisma/prisma.module';
 import { RedisModule } from 'src/common/redis/redis.module';
@@ -20,9 +21,10 @@ export const userModuleMock = {
     FindByIdUserUseCase,
     UpdateUserUseCase,
     SoftDeleteUserUseCase,
+    FindByEmailUserUseCase,
     UserRepository,
   ],
-  exports: [FindByIdUserUseCase],
+  exports: [FindByIdUserUseCase, FindByEmailUserUseCase],
 };
 
 @Module(userModuleMock)

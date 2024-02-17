@@ -108,6 +108,20 @@ enum STOCK_TYPE {
   OUTCOME
 }
 
+model Color {
+  id   String @id @default(uuid())
+  name String
+  hex  String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  skus Sku[]
+
+  @@map("color")
+}
+
 model Stock {
   id          String     @id @default(uuid())
   description String?
@@ -122,20 +136,6 @@ model Stock {
   sku Sku @relation(fields: [skuId], references: [id])
 
   @@map("stock")
-}
-
-model Color {
-  id   String @id @default(uuid())
-  name String
-  hex  String
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  skus Sku[]
-
-  @@map("color")
 }
 
 model Rating {

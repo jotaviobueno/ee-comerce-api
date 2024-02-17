@@ -4,6 +4,7 @@ import { userModuleMock } from '../../user.module';
 import { CreateUserUseCase } from './create-user.use-case';
 import { PrismaService } from 'src/common/database/prisma/prisma.service';
 import { createUserDtoMock, userMock } from 'src/__mocks__';
+import { HttpException } from '@nestjs/common';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
@@ -58,5 +59,31 @@ describe('CreateUserUseCase', () => {
         deletedAt: true,
       },
     });
+  });
+
+  it('Should throw an error when already exist email', async () => {
+    jest.spyOn(prismaService.user, 'findFirst').mockResolvedValueOnce(userMock);
+
+    const create = jest.spyOn(useCase, 'execute');
+
+    await expect(useCase.execute(createUserDtoMock)).rejects.toThrow(
+      HttpException,
+    );
+
+    expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should throw an error when already exist username', async () => {
+    jest.spyOn(prismaService.user, 'findFirst').mockResolvedValueOnce(null);
+
+    jest.spyOn(prismaService.user, 'findFirst').mockResolvedValueOnce(userMock);
+
+    const create = jest.spyOn(useCase, 'execute');
+
+    await expect(useCase.execute(createUserDtoMock)).rejects.toThrow(
+      HttpException,
+    );
+
+    expect(create).toHaveBeenCalledTimes(1);
   });
 });

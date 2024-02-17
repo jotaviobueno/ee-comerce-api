@@ -22,6 +22,7 @@ import {
   UpdateUserUseCase,
 } from './use-cases';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { IsPublic } from '../auth/decorators';
 
 @Controller('user')
 export class UserController {
@@ -34,6 +35,7 @@ export class UserController {
   ) {}
 
   @Post()
+  @IsPublic()
   create(@Body() createUserDto: CreateUserDto) {
     return this.createUserUseCase.execute(createUserDto);
   }

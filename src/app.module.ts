@@ -7,6 +7,9 @@ import { SkuModule } from './modules/sku/sku.module';
 import { ColorModule } from './modules/color/color.module';
 import { PrismaModule } from './common/database/prisma/prisma.module';
 import { RedisModule } from './common/redis/redis.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './modules/auth/guards';
 
 @Module({
   imports: [
@@ -18,6 +21,13 @@ import { RedisModule } from './common/redis/redis.module';
     ProductModule,
     SkuModule,
     ColorModule,
+    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
