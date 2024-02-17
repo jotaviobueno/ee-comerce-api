@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateColorDto, QueryParamsDto } from 'src/domain/dtos';
 import { CreateColorUseCase, FindAllColorUseCase } from './use-cases';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('color')
 export class ColorController {
@@ -15,6 +23,8 @@ export class ColorController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
   findAll(@Query() queryParamsDto: QueryParamsDto) {
     return this.findAllColorUseCase.execute(queryParamsDto);
   }

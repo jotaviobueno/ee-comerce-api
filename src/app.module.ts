@@ -6,11 +6,11 @@ import { ProductModule } from './modules/product/product.module';
 import { SkuModule } from './modules/sku/sku.module';
 import { ColorModule } from './modules/color/color.module';
 import { PrismaModule } from './common/database/prisma/prisma.module';
-import { CacheModule } from './common/cache/cache.module';
+import { RedisModule } from './common/redis/redis.module';
 
 @Module({
   imports: [
-    CacheModule,
+    RedisModule,
     PrismaModule,
     HealthModule,
     UserModule,

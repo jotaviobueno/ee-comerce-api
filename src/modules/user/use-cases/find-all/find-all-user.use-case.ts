@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UseCaseBase } from 'src/domain/base';
 import { QueryParamsDto } from 'src/domain/dtos';
 import { UserEntity } from 'src/domain/entities';
 import { QueryBuilder } from 'src/domain/utils/query-builder';
 import { UserRepository } from '../../user.repository';
-import { CacheService } from 'src/common/cache/cache.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class FindAllUserUseCase
@@ -12,12 +13,14 @@ export class FindAllUserUseCase
 {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly cacheService: CacheService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async execute(data: QueryParamsDto): Promise<Omit<UserEntity, 'password'>[]> {
-    const cache =
-      await this.cacheService.getCache<Omit<UserEntity, 'password'>[]>('users');
+    const cache = await this.cacheManager.get<
+      Omit<UserEntity, 'password'>[] | null
+    >('users');
 
     if (cache) return cache;
 
@@ -25,7 +28,7 @@ export class FindAllUserUseCase
 
     const users = await this.userRepository.findAll(query);
 
-    await this.cacheService.setCache('users', users);
+    await this.cacheManager.set('users', users);
 
     return users;
   }

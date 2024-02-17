@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   CreateStoreDto,
@@ -20,6 +21,7 @@ import {
   UpdateStoreUseCase,
   SoftDeleteStoreUseCase,
 } from './use-cases';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('store')
 export class StoreController {
@@ -37,17 +39,24 @@ export class StoreController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
   findAll(@Query() queryParams: QueryParamsDto) {
     return this.findAllStoreUseCase.execute(queryParams);
   }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
+  findById(@Param('id') id: string) {
     return this.findByIdStoreUseCase.execute(id);
   }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
     return this.updateStoreUseCase.execute({ ...updateStoreDto, id });
   }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.softDeleteStoreUseCase.execute(id);
