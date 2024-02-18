@@ -5,9 +5,9 @@ export class SkuEntity implements Sku {
   width: number;
   length: number;
   height: number;
+  batchs: string[];
   weight: number;
   size: SKU_SIZE;
-  batch: string;
   costPrice: number;
   quantity: number;
   productId: string;

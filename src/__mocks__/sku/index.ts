@@ -9,7 +9,7 @@ export const skuMock: SkuEntity = {
   height: 10,
   weight: 10,
   size: 'XXS',
-  batch: '10a1-cjaA',
+  batchs: ['AAAA-DDA1'],
   productId: '1',
   colorId: '1',
   createdAt: expect.any(Date),
@@ -27,7 +27,7 @@ export const createSkuDtoMock: CreateSkuDto = {
   colorId: '1',
   productId: '1',
   size: SKU_SIZE_ENUM.XXS,
-  batch: '10a1-cjaA',
+  batchs: ['AAAA-DDA1'],
   costPrice: 10,
   quantity: 50,
 };

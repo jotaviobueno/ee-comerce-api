@@ -70,7 +70,7 @@ model Sku {
   height Float
   weight Float
   size   SKU_SIZE
-  batch  String
+  batchs String[] @default([])
 
   costPrice Float @map("cost_price")
 

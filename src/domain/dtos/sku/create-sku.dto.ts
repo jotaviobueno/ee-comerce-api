@@ -1,4 +1,6 @@
 import {
+  ArrayMinSize,
+  IsArray,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -32,11 +34,13 @@ export class CreateSkuDto {
   @IsNotEmpty()
   size: SKU_SIZE_ENUM;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(55)
-  batch: string;
+  @IsArray()
+  @MinLength(3, { each: true })
+  @MaxLength(55, { each: true })
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  @ArrayMinSize(1)
+  batchs: string[];
 
   @IsUUID()
   @IsOptional()
