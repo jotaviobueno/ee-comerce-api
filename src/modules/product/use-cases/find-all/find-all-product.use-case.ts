@@ -28,7 +28,7 @@ export class FindAllProductUseCase
 
     const products = await this.productRepository.findAll(query);
 
-    await this.cacheManager.set('products', products);
+    if (products.length > 0) await this.cacheManager.set('products', products);
 
     return products;
   }

@@ -26,7 +26,7 @@ export class FindAllColorUseCase
 
     const colors = await this.colorRepository.findAll(query);
 
-    await this.cacheManager.set('colors', colors);
+    if (colors.length > 0) await this.cacheManager.set('colors', colors);
 
     return colors;
   }

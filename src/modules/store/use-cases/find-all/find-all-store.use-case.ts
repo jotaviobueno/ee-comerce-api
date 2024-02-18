@@ -26,7 +26,7 @@ export class FindAllStoreUseCase
 
     const stores = await this.storeRepository.findAll(query);
 
-    await this.cacheManager.set('stores', cache);
+    if (stores.length > 0) await this.cacheManager.set('stores', cache);
 
     return stores;
   }
