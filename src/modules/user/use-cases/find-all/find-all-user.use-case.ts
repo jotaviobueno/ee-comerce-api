@@ -28,7 +28,7 @@ export class FindAllUserUseCase
 
     const users = await this.userRepository.findAll(query);
 
-    if (users.length > 0) await this.cacheManager.set('users', users);
+    await this.cacheManager.set('users', users);
 
     return users;
   }

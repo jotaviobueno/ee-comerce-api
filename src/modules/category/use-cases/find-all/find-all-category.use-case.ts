@@ -28,8 +28,7 @@ export class FindAllCategoryUseCase
 
     const categories = await this.categoryRepository.findAll(query);
 
-    if (categories.length > 0)
-      await this.cacheManager.set('categories', categories);
+    await this.cacheManager.set('categories', categories);
 
     return categories;
   }

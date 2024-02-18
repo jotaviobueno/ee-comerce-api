@@ -26,7 +26,7 @@ export class FindAllSkuUseCase
 
     const skus = await this.skuRepository.findAll(query);
 
-    if (skus.length > 0) await this.cacheManager.set('skus', skus);
+    await this.cacheManager.set('skus', skus);
 
     return skus;
   }
