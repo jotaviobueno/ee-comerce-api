@@ -1,4 +1,4 @@
-import { CreateSkuDto } from 'src/domain/dtos';
+import { CreateSkuDto, UpdateSkuDto } from 'src/domain/dtos';
 import { SkuEntity } from 'src/domain/entities';
 import { SKU_SIZE_ENUM } from 'src/domain/enums';
 
@@ -30,4 +30,10 @@ export const createSkuDtoMock: CreateSkuDto = {
   batch: '10a1-cjaA',
   costPrice: 10,
   quantity: 50,
+};
+
+export const updateSkuDtoMock: UpdateSkuDto = {
+  id: '1',
+  colorId: '1',
+  quantity: 10,
 };
