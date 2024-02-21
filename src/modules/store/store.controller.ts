@@ -22,6 +22,7 @@ import {
   SoftDeleteStoreUseCase,
 } from './use-cases';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { IsPublic } from '../auth/decorators';
 
 @Controller('store')
 export class StoreController {
@@ -46,8 +47,7 @@ export class StoreController {
   }
 
   @Get(':id')
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(15)
+  @IsPublic()
   findById(@Param('id') id: string) {
     return this.findByIdStoreUseCase.execute(id);
   }

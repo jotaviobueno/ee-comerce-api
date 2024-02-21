@@ -4,7 +4,7 @@ import { ProductRepository } from './product.repository';
 import { PrismaModule } from 'src/common/database/prisma/prisma.module';
 import {
   CreateProductUseCase,
-  FindAllProductUseCase,
+  FindAllProductByStoreIdUseCase,
   FindByIdProductUseCase,
   SoftDeleteProductUseCase,
   UpdateProductUseCase,
@@ -19,7 +19,7 @@ export const productModuleMock = {
     ProductRepository,
     CreateProductUseCase,
     FindByIdProductUseCase,
-    FindAllProductUseCase,
+    FindAllProductByStoreIdUseCase,
     UpdateProductUseCase,
     SoftDeleteProductUseCase,
   ],

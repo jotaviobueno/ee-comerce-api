@@ -13,6 +13,8 @@ import { AuthGuard } from './modules/auth/guards';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductCategoryModule } from './modules/product-category/product-category.module';
 import { RatingModule } from './modules/rating/rating.module';
+import { PageModule } from './modules/page/page.module';
+import { S3Module } from './modules/s3/s3.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { RatingModule } from './modules/rating/rating.module';
     CategoryModule,
     ProductCategoryModule,
     RatingModule,
+    PageModule,
+    S3Module,
   ],
   providers: [
     {

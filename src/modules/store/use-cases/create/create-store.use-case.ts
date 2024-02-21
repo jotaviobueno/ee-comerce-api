@@ -4,6 +4,7 @@ import { CreateStoreDto } from 'src/domain/dtos';
 import { StoreEntity } from 'src/domain/entities';
 import { FindByIdUserUseCase } from 'src/modules/user/use-cases';
 import { StoreRepository } from '../../store.repository';
+import { CreatePageUseCase } from 'src/modules/page/use-cases';
 
 @Injectable()
 export class CreateStoreUseCase
@@ -12,6 +13,7 @@ export class CreateStoreUseCase
   constructor(
     private readonly findByIdUserUseCase: FindByIdUserUseCase,
     private readonly storeRepository: StoreRepository,
+    private readonly createPageUseCase: CreatePageUseCase,
   ) {}
 
   async execute(data: CreateStoreDto): Promise<StoreEntity> {
@@ -21,6 +23,8 @@ export class CreateStoreUseCase
       ...data,
       userId: user.id,
     });
+
+    await this.createPageUseCase.execute({ storeId: store.id });
 
     return store;
   }

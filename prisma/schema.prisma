@@ -30,7 +30,7 @@ model User {
 model Store {
   id     String @id @default(uuid())
   name   String
-  avatar String @default("https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg")
+  logo   String @default("https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg")
   userId String @map("user_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
@@ -39,15 +39,30 @@ model Store {
 
   user     User      @relation(fields: [userId], references: [id])
   products Product[]
+  page     Page?
 
   @@map("store")
+}
+
+model Page {
+  id      String   @id @default(uuid())
+  images  String[] @default([])
+  storeId String   @unique @map("store_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  store Store @relation(fields: [storeId], references: [id])
+
+  @@map("page")
 }
 
 model Product {
   id          String    @id @default(uuid())
   name        String
   description String
-  images      String[]  @default([])
+  images      String[]  @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/product/images/77d06451-1f8e-4a2b-bbfe-7ff52f217873.jpeg"])
   price       Float
   storeId     String    @map("store_id")
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp

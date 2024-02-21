@@ -1,10 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/common/database/prisma/prisma.service';
-import { createStoreDtoMock, storeMock, userMock } from 'src/__mocks__';
+import {
+  createStoreDtoMock,
+  pageMock,
+  storeMock,
+  userMock,
+} from 'src/__mocks__';
 import { CreateStoreUseCase } from './create-store.use-case';
 import { storeModuleMock } from '../../store.module';
 
-describe('CreateUserUseCase', () => {
+describe('CreateStoreUseCase', () => {
   let useCase: CreateStoreUseCase;
   let moduleRef: TestingModule;
   let prismaService: PrismaService;
@@ -28,6 +33,8 @@ describe('CreateUserUseCase', () => {
 
   it('should be create', async () => {
     jest.spyOn(prismaService.user, 'findFirst').mockResolvedValue(userMock);
+
+    jest.spyOn(prismaService.page, 'create').mockResolvedValue(pageMock);
 
     const create = jest
       .spyOn(prismaService.store, 'create')

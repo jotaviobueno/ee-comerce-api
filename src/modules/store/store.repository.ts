@@ -17,11 +17,14 @@ export class StoreRepository extends RepositoryFactory<
     return this.prismaService.store.findMany(query);
   }
 
-  findById(id: string): Promise<StoreEntity> {
+  findById(id: string): Promise<StoreEntity | null> {
     return this.prismaService.store.findFirst({
       where: {
         id,
         deletedAt: null,
+      },
+      include: {
+        page: true,
       },
     });
   }

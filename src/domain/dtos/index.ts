@@ -8,3 +8,4 @@ export * from './auth';
 export * from './category';
 export * from './product-category';
 export * from './ratting';
+export * from './page';

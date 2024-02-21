@@ -4,7 +4,7 @@ export class StoreEntity implements Store {
   id: string;
   name: string;
   userId: string;
-  avatar: string;
+  logo: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;

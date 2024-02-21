@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   CreateCategoryDto,
@@ -20,6 +21,7 @@ import {
   FindByIdCategoryUseCase,
   SoftDeleteCategoryUseCase,
 } from './use-cases';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('category')
 export class CategoryController {
@@ -37,6 +39,8 @@ export class CategoryController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
   findAll(@Query() queryParamsDto: QueryParamsDto) {
     return this.findAllCategoryUseCase.execute(queryParamsDto);
   }

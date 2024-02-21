@@ -8,3 +8,4 @@ export * from './category';
 export * from './product-category';
 export * from './rating';
 export * from './auth';
+export * from './page';

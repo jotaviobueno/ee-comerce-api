@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/common/database/prisma/prisma.service';
-import { productMock, queryParamsDtoMock } from 'src/__mocks__';
+import { productMock, queryParamsDtoMock, storeMock } from 'src/__mocks__';
 import { productModuleMock } from '../../product.module';
-import { FindAllProductUseCase } from './find-all-product.use-case';
+import { FindAllProductByStoreIdUseCase } from './find-all-product-by-store-id.use-case';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
-describe('FindAllProductUseCase', () => {
-  let useCase: FindAllProductUseCase;
+describe('FindAllProductByStoreIdUseCase', () => {
+  let useCase: FindAllProductByStoreIdUseCase;
   let moduleRef: TestingModule;
   let prismaService: PrismaService;
   let cache: Cache;
@@ -16,7 +16,9 @@ describe('FindAllProductUseCase', () => {
     moduleRef = await Test.createTestingModule(productModuleMock).compile();
 
     prismaService = moduleRef.get<PrismaService>(PrismaService);
-    useCase = moduleRef.get<FindAllProductUseCase>(FindAllProductUseCase);
+    useCase = moduleRef.get<FindAllProductByStoreIdUseCase>(
+      FindAllProductByStoreIdUseCase,
+    );
     cache = moduleRef.get(CACHE_MANAGER);
   });
 
@@ -31,6 +33,8 @@ describe('FindAllProductUseCase', () => {
   });
 
   it('should be findAll', async () => {
+    jest.spyOn(prismaService.store, 'findFirst').mockResolvedValue(storeMock);
+
     jest.spyOn(cache, 'get').mockResolvedValue(null);
 
     jest.spyOn(cache, 'set').mockResolvedValue();
@@ -39,13 +43,17 @@ describe('FindAllProductUseCase', () => {
       .spyOn(prismaService.product, 'findMany')
       .mockResolvedValue([productMock]);
 
-    const response = await useCase.execute(queryParamsDtoMock);
+    const response = await useCase.execute({
+      ...queryParamsDtoMock,
+      storeId: '1',
+    });
 
     expect(response).toStrictEqual([productMock]);
     expect(findAll).toHaveBeenCalledWith({
       skip: 0,
       take: 200,
       where: {
+        storeId: '1',
         deletedAt: null,
       },
       include: {

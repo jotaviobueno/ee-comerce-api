@@ -11,9 +11,10 @@ import {
 import { StoreRepository } from './store.repository';
 import { PrismaModule } from 'src/common/database/prisma/prisma.module';
 import { RedisModule } from 'src/common/redis/redis.module';
+import { PageModule } from '../page/page.module';
 
 export const storeModuleMock = {
-  imports: [PrismaModule, UserModule, RedisModule],
+  imports: [PrismaModule, UserModule, RedisModule, PageModule],
   controllers: [StoreController],
   providers: [
     StoreRepository,

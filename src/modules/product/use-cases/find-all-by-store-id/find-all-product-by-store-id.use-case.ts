@@ -6,29 +6,39 @@ import { QueryBuilder } from 'src/domain/utils';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ProductEntity } from 'src/domain/entities';
+import { FindByIdStoreUseCase } from 'src/modules/store/use-cases';
 
 @Injectable()
-export class FindAllProductUseCase
-  implements UseCaseBase<QueryParamsDto, ProductEntity[]>
+export class FindAllProductByStoreIdUseCase
+  implements UseCaseBase<QueryParamsDto & { storeId: string }, ProductEntity[]>
 {
   constructor(
+    private readonly findByIdStoreUseCase: FindByIdStoreUseCase,
     private readonly productRepository: ProductRepository,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
 
-  async execute(data: QueryParamsDto): Promise<ProductEntity[]> {
+  async execute({
+    storeId,
+    ...data
+  }: QueryParamsDto & { storeId: string }): Promise<ProductEntity[]> {
+    const store = await this.findByIdStoreUseCase.execute(storeId);
+
     const cache = await this.cacheManager.get<ProductEntity[] | null>(
-      'products',
+      `products_${store.id}`,
     );
 
     if (cache) return cache;
 
     const query = new QueryBuilder(data).pagination().handle();
 
-    const products = await this.productRepository.findAll(query);
+    const products = await this.productRepository.findAll({
+      ...query,
+      storeId: store.id,
+    });
 
-    await this.cacheManager.set('products', products);
+    await this.cacheManager.set(`products_${store.id}`, products);
 
     return products;
   }

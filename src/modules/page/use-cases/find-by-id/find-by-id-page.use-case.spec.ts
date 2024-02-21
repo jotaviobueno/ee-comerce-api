@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/common/database/prisma/prisma.service';
-import { storeMock } from 'src/__mocks__';
+import { pageMock } from 'src/__mocks__';
 import { HttpException } from '@nestjs/common';
-import { FindByIdStoreUseCase } from './find-by-id-store.use-case';
-import { storeModuleMock } from '../../store.module';
+import { FindByIdPageUseCase } from './find-by-id-page.use-case';
+import { pageModuleMock } from '../../page.module';
 
-describe('FindByIdStoreUseCase', () => {
-  let useCase: FindByIdStoreUseCase;
+describe('FindByIdPageUseCase', () => {
+  let useCase: FindByIdPageUseCase;
   let moduleRef: TestingModule;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
-    moduleRef = await Test.createTestingModule(storeModuleMock).compile();
+    moduleRef = await Test.createTestingModule(pageModuleMock).compile();
 
     prismaService = moduleRef.get<PrismaService>(PrismaService);
-    useCase = moduleRef.get<FindByIdStoreUseCase>(FindByIdStoreUseCase);
+    useCase = moduleRef.get<FindByIdPageUseCase>(FindByIdPageUseCase);
   });
 
   it('should be defined', () => {
@@ -29,25 +29,22 @@ describe('FindByIdStoreUseCase', () => {
 
   it('should be find by id', async () => {
     const findFirst = jest
-      .spyOn(prismaService.store, 'findFirst')
-      .mockResolvedValue(storeMock);
+      .spyOn(prismaService.page, 'findFirst')
+      .mockResolvedValue(pageMock);
 
     const response = await useCase.execute('1');
 
-    expect(response).toStrictEqual(storeMock);
+    expect(response).toStrictEqual(pageMock);
     expect(findFirst).toHaveBeenCalledWith({
       where: {
         id: '1',
         deletedAt: null,
       },
-      include: {
-        page: true,
-      },
     });
   });
 
-  it('Should throw an error when not found store', async () => {
-    jest.spyOn(prismaService.store, 'findFirst').mockResolvedValue(null);
+  it('Should throw an error when not found page', async () => {
+    jest.spyOn(prismaService.page, 'findFirst').mockResolvedValue(null);
 
     const spyFind = jest.spyOn(useCase, 'execute');
 
