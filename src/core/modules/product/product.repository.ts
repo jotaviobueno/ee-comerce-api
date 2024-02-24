@@ -19,16 +19,32 @@ export class ProductRepository extends RepositoryFactory<
         id,
         deletedAt: null,
       },
+      include: {
+        productCategories: {
+          include: {
+            category: true,
+          },
+        },
+        ratings: {
+          where: {
+            deletedAt: null,
+          },
+        },
+        skus: {
+          where: {
+            deletedAt: null,
+          },
+          include: {
+            color: true,
+          },
+        },
+      },
     });
   }
 
-  findAll({ storeId, ...query }: QueryBuilderEntity & { storeId: string }) {
+  findAll(query: QueryBuilderEntity) {
     return this.prismaService.product.findMany({
       ...query,
-      where: {
-        storeId,
-        deletedAt: null,
-      },
       include: {
         productCategories: {
           include: {

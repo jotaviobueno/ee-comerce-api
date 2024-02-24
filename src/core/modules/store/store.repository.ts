@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStoreDto, UpdateStoreDto } from 'src/domain/dtos';
-import { QueryBuilderEntity, StoreEntity } from 'src/domain/entities';
+import { StoreEntity } from 'src/domain/entities';
 import { RepositoryFactory } from 'src/common/factories';
 
 @Injectable()
@@ -13,8 +13,23 @@ export class StoreRepository extends RepositoryFactory<
     super('store');
   }
 
-  findAll(query: QueryBuilderEntity): Promise<StoreEntity[]> {
-    return this.prismaService.store.findMany(query);
+  create(data: CreateStoreDto & { logo?: string }): Promise<StoreEntity> {
+    return this.prismaService.store.create({
+      data: {
+        ...data,
+        deletedAt: null,
+      },
+    });
+  }
+
+  update({
+    id,
+    ...data
+  }: UpdateStoreDto & { id: string; logo?: string }): Promise<StoreEntity> {
+    return this.prismaService.store.update({
+      where: { id },
+      data,
+    });
   }
 
   findById(id: string): Promise<StoreEntity | null> {

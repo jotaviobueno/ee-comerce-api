@@ -37,16 +37,18 @@ model Store {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  user     User      @relation(fields: [userId], references: [id])
-  products Product[]
-  page     Page?
+  user                User                 @relation(fields: [userId], references: [id])
+  products            Product[]
+  page                Page?
+  categories          Category[]
+  distributionCenters DistributionCenter[]
 
   @@map("store")
 }
 
 model Page {
   id      String   @id @default(uuid())
-  images  String[] @default([])
+  images  String[] @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg"])
   storeId String   @unique @map("store_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
@@ -123,6 +125,30 @@ enum STOCK_TYPE {
   OUTCOME
 }
 
+model Discount {
+  id         String @id @default(uuid())
+  name       String
+  percentage Int
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  @@map("discount")
+  @@ignore
+}
+
+model Variant {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  @@map("variant")
+  @@ignore
+}
+
 model Color {
   id   String @id @default(uuid())
   name String
@@ -185,14 +211,16 @@ model ProductCategory {
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String
+  id      String @id @default(uuid())
+  name    String
+  storeId String @map("store_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
   productCategories ProductCategory[]
+  store             Store             @relation(fields: [storeId], references: [id])
 
   @@map("category")
 }
@@ -201,12 +229,14 @@ model DistributionCenter {
   id          String  @id @default(uuid())
   name        String
   description String?
+  storeId     String  @map("store_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
   areas Area[]
+  store Store  @relation(fields: [storeId], references: [id])
 
   @@map("distribution_center")
 }
@@ -215,8 +245,8 @@ model AreaSku {
   id     String @id @default(uuid())
   area   Area   @relation(fields: [areaId], references: [id])
   sku    Sku    @relation(fields: [skuId], references: [id])
-  areaId String
-  skuId  String
+  areaId String @map("area_id")
+  skuId  String @map("sku_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
@@ -243,8 +273,8 @@ model ProductSupplier {
   id         String   @id @default(uuid())
   product    Product  @relation(fields: [productId], references: [id])
   supplier   Supplier @relation(fields: [supplierId], references: [id])
-  productId  String
-  supplierId String
+  productId  String   @map("product_id")
+  supplierId String   @map("supplier_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp

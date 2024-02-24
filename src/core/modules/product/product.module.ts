@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ProductController } from './product.controller';
 import { ProductRepository } from './product.repository';
 import { PrismaModule } from 'src/infra/database/prisma/prisma.module';
@@ -9,11 +9,11 @@ import {
   SoftDeleteProductUseCase,
   UpdateProductUseCase,
 } from './use-cases';
-import { StoreModule } from '../store/store.module';
 import { RedisModule } from 'src/infra/redis/redis.module';
+import { StoreModule } from '../store/store.module';
 
 export const productModuleMock = {
-  imports: [PrismaModule, StoreModule, RedisModule],
+  imports: [PrismaModule, RedisModule, forwardRef(() => StoreModule)],
   controllers: [ProductController],
   providers: [
     ProductRepository,
@@ -23,7 +23,7 @@ export const productModuleMock = {
     UpdateProductUseCase,
     SoftDeleteProductUseCase,
   ],
-  exports: [FindByIdProductUseCase],
+  exports: [FindByIdProductUseCase, FindAllProductByStoreIdUseCase],
 };
 
 @Module(productModuleMock)

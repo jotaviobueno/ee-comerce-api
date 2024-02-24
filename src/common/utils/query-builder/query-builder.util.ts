@@ -23,6 +23,12 @@ export class QueryBuilder {
     return this;
   }
 
+  where(condition: Record<string, any>) {
+    this.query.where = { ...this.query.where, ...condition };
+
+    return this;
+  }
+
   handle() {
     return this.query;
   }

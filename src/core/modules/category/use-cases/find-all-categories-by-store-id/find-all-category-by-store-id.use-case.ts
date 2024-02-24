@@ -3,13 +3,14 @@ import { UseCaseBase } from 'src/common/base';
 import { QueryParamsDto } from 'src/domain/dtos';
 import { CategoryEntity } from 'src/domain/entities';
 import { CategoryRepository } from '../../category.repository';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { QueryBuilder } from 'src/common/utils';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
-export class FindAllCategoryUseCase
-  implements UseCaseBase<QueryParamsDto, CategoryEntity[]>
+export class FindAllCategoryByStoreIdUseCase
+  implements
+    UseCaseBase<QueryParamsDto & { storeId: string }, CategoryEntity[]>
 {
   constructor(
     private readonly categoryRepository: CategoryRepository,
@@ -17,18 +18,24 @@ export class FindAllCategoryUseCase
     private readonly cacheManager: Cache,
   ) {}
 
-  async execute(data: QueryParamsDto): Promise<CategoryEntity[]> {
+  async execute({
+    storeId,
+    ...data
+  }: QueryParamsDto & { storeId: string }): Promise<CategoryEntity[]> {
     const cache = await this.cacheManager.get<CategoryEntity[] | null>(
-      'categories',
+      `${storeId}_categories`,
     );
 
     if (cache) return cache;
 
     const query = new QueryBuilder(data).pagination().handle();
 
-    const categories = await this.categoryRepository.findAll(query);
+    const categories = await this.categoryRepository.findAll({
+      ...query,
+      storeId: storeId,
+    });
 
-    await this.cacheManager.set('categories', categories);
+    await this.cacheManager.set(`${storeId}_categories`, categories);
 
     return categories;
   }

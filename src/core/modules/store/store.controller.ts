@@ -12,26 +12,29 @@ import {
 import {
   CreateStoreDto,
   QueryParamsDto,
+  SearchProductDto,
   UpdateStoreDto,
 } from 'src/domain/dtos';
 import {
   CreateStoreUseCase,
-  FindAllStoreUseCase,
   FindByIdStoreUseCase,
   UpdateStoreUseCase,
   SoftDeleteStoreUseCase,
+  FindAllProductsByStoreIdUseCase,
+  FindAllCategoriesByStoreIdUseCase,
 } from './use-cases';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { IsPublic } from '../auth/decorators';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('store')
 export class StoreController {
   constructor(
     private readonly createStoreUseCase: CreateStoreUseCase,
-    private readonly findAllStoreUseCase: FindAllStoreUseCase,
     private readonly findByIdStoreUseCase: FindByIdStoreUseCase,
     private readonly updateStoreUseCase: UpdateStoreUseCase,
     private readonly softDeleteStoreUseCase: SoftDeleteStoreUseCase,
+    private readonly findAllProductsByStoreIdUseCase: FindAllProductsByStoreIdUseCase,
+    private readonly findAllCategoriesByStoreIdUseCase: FindAllCategoriesByStoreIdUseCase,
   ) {}
 
   @Post()
@@ -39,11 +42,30 @@ export class StoreController {
     return this.createStoreUseCase.execute(createStoreDto);
   }
 
-  @Get()
+  @Get(':id/products')
+  @IsPublic()
+  findAllProductsByStoreId(
+    @Query() queryParams: SearchProductDto,
+    @Param('id') id: string,
+  ) {
+    return this.findAllProductsByStoreIdUseCase.execute({
+      ...queryParams,
+      storeId: id,
+    });
+  }
+
+  @Get(':id/categories')
+  @IsPublic()
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(15)
-  findAll(@Query() queryParams: QueryParamsDto) {
-    return this.findAllStoreUseCase.execute(queryParams);
+  findAllCategoriesByStoreId(
+    @Query() queryParams: QueryParamsDto,
+    @Param('id') id: string,
+  ) {
+    return this.findAllCategoriesByStoreIdUseCase.execute({
+      ...queryParams,
+      storeId: id,
+    });
   }
 
   @Get(':id')

@@ -13,8 +13,17 @@ export class CategoryRepository extends RepositoryFactory<
     super('category');
   }
 
-  findAll(query: QueryBuilderEntity): Promise<CategoryEntity[]> {
-    return this.prismaService.category.findMany(query);
+  findAll({
+    storeId,
+    ...query
+  }: QueryBuilderEntity & { storeId: string }): Promise<CategoryEntity[]> {
+    return this.prismaService.category.findMany({
+      ...query,
+      where: {
+        storeId,
+        deletedAt: null,
+      },
+    });
   }
 
   findById(id: string): Promise<CategoryEntity | null> {

@@ -7,10 +7,12 @@ export const categoryMock: CategoryEntity = {
   createdAt: expect.any(Date),
   updatedAt: expect.any(Date),
   deletedAt: null,
+  storeId: '1',
 };
 
 export const createCategoryDtoMock: CreateCategoryDto = {
   name: 'name',
+  storeId: '1',
 };
 
 export const updateCategoryDtoMock: UpdateCategoryDto = {

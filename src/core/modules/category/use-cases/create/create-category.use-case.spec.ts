@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/infra/database/prisma/prisma.service';
-import { categoryMock, createCategoryDtoMock } from 'src/__mocks__';
+import { categoryMock, createCategoryDtoMock, storeMock } from 'src/__mocks__';
 import { CreateCategoryUseCase } from './create-category.use-case';
 import { categoryModuleMock } from '../../category.module';
 
@@ -27,6 +27,8 @@ describe('CreateCategoryUseCase', () => {
   });
 
   it('should be create', async () => {
+    jest.spyOn(prismaService.store, 'findFirst').mockResolvedValue(storeMock);
+
     const create = jest
       .spyOn(prismaService.category, 'create')
       .mockResolvedValue(categoryMock);

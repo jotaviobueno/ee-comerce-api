@@ -6,28 +6,19 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
-  UseInterceptors,
 } from '@nestjs/common';
-import {
-  CreateCategoryDto,
-  QueryParamsDto,
-  UpdateCategoryDto,
-} from 'src/domain/dtos';
+import { CreateCategoryDto, UpdateCategoryDto } from 'src/domain/dtos';
 import {
   CreateCategoryUseCase,
-  FindAllCategoryUseCase,
   UpdateCategoryUseCase,
   FindByIdCategoryUseCase,
   SoftDeleteCategoryUseCase,
 } from './use-cases';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('category')
 export class CategoryController {
   constructor(
     private readonly createCategoryUseCase: CreateCategoryUseCase,
-    private readonly findAllCategoryUseCase: FindAllCategoryUseCase,
     private readonly updateCategoryUseCase: UpdateCategoryUseCase,
     private readonly findByIdCategoryUseCase: FindByIdCategoryUseCase,
     private readonly softDeleteCategoryUseCase: SoftDeleteCategoryUseCase,
@@ -36,13 +27,6 @@ export class CategoryController {
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.createCategoryUseCase.execute(createCategoryDto);
-  }
-
-  @Get()
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(15)
-  findAll(@Query() queryParamsDto: QueryParamsDto) {
-    return this.findAllCategoryUseCase.execute(queryParamsDto);
   }
 
   @Get(':id')

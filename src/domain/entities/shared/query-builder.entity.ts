@@ -1,5 +1,5 @@
 export class QueryBuilderEntity {
   skip?: number;
   take?: number;
-  where: unknown;
+  where: any;
 }
