@@ -9,7 +9,7 @@ import { environment } from 'src/config';
       isGlobal: true,
       name: environment.REDIS_HOST,
       password: environment.REDIS_PASSWORD,
-      database: +environment.REDIS_PORT,
+      database: environment.REDIS_PORT,
     }),
   ],
 })

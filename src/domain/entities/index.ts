@@ -9,3 +9,4 @@ export * from './product-category';
 export * from './rating';
 export * from './auth';
 export * from './page';
+export * from './footer';

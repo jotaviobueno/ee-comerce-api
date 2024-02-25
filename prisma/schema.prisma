@@ -22,22 +22,54 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
-  stores    Store[]
+
+  userCompanies UserCompany[]
 
   @@map("user")
 }
 
-model Store {
-  id     String @id @default(uuid())
-  name   String
-  logo   String @default("https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg")
-  userId String @map("user_id")
+model UserCompany {
+  id        String @id @default(uuid())
+  userId    String @map("user_id")
+  companyId String @map("company_id")
+
+  user    User    @relation(fields: [userId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  user                User                 @relation(fields: [userId], references: [id])
+  @@map("user_company")
+}
+
+model Company {
+  id          String @id @default(uuid())
+  name        String
+  fantasyName String @map("fantasy_name")
+  cnpj        String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  userCompanies UserCompany[]
+  stores        Store[]
+
+  @@map("company")
+}
+
+model Store {
+  id        String @id @default(uuid())
+  name      String
+  logo      String @default("https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg")
+  companyId String @map("company_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  commpany            Company              @relation(fields: [companyId], references: [id])
   products            Product[]
   page                Page?
   categories          Category[]
@@ -55,7 +87,8 @@ model Page {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  store Store @relation(fields: [storeId], references: [id])
+  store   Store    @relation(fields: [storeId], references: [id])
+  footers Footer[]
 
   @@map("page")
 }
@@ -223,6 +256,25 @@ model Category {
   store             Store             @relation(fields: [storeId], references: [id])
 
   @@map("category")
+}
+
+model Footer {
+  id   String  @id @default(uuid())
+  name String
+  href String?
+
+  pageId   String  @map("page_id")
+  parentId String? @map("parent_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  parent   Footer?  @relation("ChildrenFooter", fields: [parentId], references: [id])
+  children Footer[] @relation("ChildrenFooter")
+  page     Page     @relation(fields: [pageId], references: [id])
+
+  @@map("footer")
 }
 
 model DistributionCenter {

@@ -15,6 +15,7 @@ import { ProductCategoryModule } from './core/modules/product-category/product-c
 import { RatingModule } from './core/modules/rating/rating.module';
 import { PageModule } from './core/modules/page/page.module';
 import { S3Module } from './core/modules/s3/s3.module';
+import { FooterModule } from './core/modules/footer/footer.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { S3Module } from './core/modules/s3/s3.module';
     RatingModule,
     PageModule,
     S3Module,
+    FooterModule,
   ],
   providers: [
     {

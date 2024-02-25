@@ -39,7 +39,19 @@ export class StoreRepository extends RepositoryFactory<
         deletedAt: null,
       },
       include: {
-        page: true,
+        page: {
+          include: {
+            footers: {
+              where: {
+                parentId: null,
+                deletedAt: null,
+              },
+              include: {
+                children: true,
+              },
+            },
+          },
+        },
       },
     });
   }
