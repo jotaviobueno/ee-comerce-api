@@ -44,9 +44,9 @@ model UserCompany {
 }
 
 model Company {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
-  fantasyName String @map("fantasy_name")
+  fantasyName String? @map("fantasy_name")
   cnpj        String
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
@@ -69,11 +69,11 @@ model Store {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  commpany            Company              @relation(fields: [companyId], references: [id])
-  products            Product[]
-  page                Page?
-  categories          Category[]
-  distributionCenters DistributionCenter[]
+  commpany   Company    @relation(fields: [companyId], references: [id])
+  products   Product[]
+  page       Page?
+  categories Category[]
+  coupons    Coupon[]
 
   @@map("store")
 }
@@ -93,6 +93,20 @@ model Page {
   @@map("page")
 }
 
+model Brand {
+  id    String @id @default(uuid())
+  name  String
+  image String @default("https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  products Product?
+
+  @@map("brand")
+}
+
 model Product {
   id          String    @id @default(uuid())
   name        String
@@ -100,6 +114,7 @@ model Product {
   images      String[]  @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/product/images/77d06451-1f8e-4a2b-bbfe-7ff52f217873.jpeg"])
   price       Float
   storeId     String    @map("store_id")
+  brandId     String?   @unique @map("brand_id")
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt   DateTime? @map("deleted_at") @db.Timestamp
@@ -109,22 +124,26 @@ model Product {
   skus              Sku[]
   ratings           Rating[]
   productSupplies   ProductSupplier[]
+  brand             Brand?            @relation(fields: [brandId], references: [id])
+  coupons           Coupon[]
 
   @@map("product")
 }
 
 model Sku {
-  id     String   @id @default(uuid())
-  width  Float
-  length Float
-  height Float
-  weight Float
-  size   SKU_SIZE
-  batchs String[] @default([])
+  id        String  @id @default(uuid())
+  width     String
+  length    String
+  height    String
+  weight    String
+  costPrice Float   @map("cost_price")
+  price     Float
+  quantity  Int     @default(0)
+  upc       String?
+  ean       String?
+  isActive  Boolean @default(true) @map("is_active")
 
-  costPrice Float @map("cost_price")
-
-  quantity Int @default(0)
+  documents String[] @default([])
 
   productId String  @map("product_id")
   colorId   String? @map("color_id")
@@ -133,24 +152,10 @@ model Sku {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  product  Product   @relation(fields: [productId], references: [id])
-  color    Color?    @relation(fields: [colorId], references: [id])
-  areaSkus AreaSku[]
-  stock    Stock[]
+  product Product @relation(fields: [productId], references: [id])
+  color   Color?  @relation(fields: [colorId], references: [id])
 
   @@map("sku")
-}
-
-enum SKU_SIZE {
-  XXS
-  XS
-  S
-  M
-  L
-  XL
-  XXL
-  XXXL
-  VARIETY
 }
 
 enum STOCK_TYPE {
@@ -158,28 +163,27 @@ enum STOCK_TYPE {
   OUTCOME
 }
 
-model Discount {
-  id         String @id @default(uuid())
-  name       String
-  percentage Int
+model Coupon {
+  id               String   @id @default(uuid())
+  name             String
+  code             String
+  discount         Int
+  maxUsages        Int      @map("max_usages")
+  maxUsagesPerUser Int      @default(1) @map("max_usages_per_user")
+  isActive         Boolean  @map("is_active")
+  storeId          String   @map("store_id")
+  fromAt           DateTime @map("from_at") @db.Timestamp
+  toAt             DateTime @map("to_at") @db.Timestamp
+  productId        String?  @map("product_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  @@map("discount")
-  @@ignore
-}
+  store   Store    @relation(fields: [storeId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
 
-model Variant {
-  id        String    @id @default(uuid())
-  name      String
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  @@map("variant")
-  @@ignore
+  @@map("coupon")
 }
 
 model Color {
@@ -194,22 +198,6 @@ model Color {
   skus Sku[]
 
   @@map("color")
-}
-
-model Stock {
-  id          String     @id @default(uuid())
-  description String?
-  type        STOCK_TYPE
-  quantity    Int
-  skuId       String     @map("sku_id")
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  sku Sku @relation(fields: [skuId], references: [id])
-
-  @@map("stock")
 }
 
 model Rating {
@@ -275,50 +263,6 @@ model Footer {
   page     Page     @relation(fields: [pageId], references: [id])
 
   @@map("footer")
-}
-
-model DistributionCenter {
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-  storeId     String  @map("store_id")
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  areas Area[]
-  store Store  @relation(fields: [storeId], references: [id])
-
-  @@map("distribution_center")
-}
-
-model AreaSku {
-  id     String @id @default(uuid())
-  area   Area   @relation(fields: [areaId], references: [id])
-  sku    Sku    @relation(fields: [skuId], references: [id])
-  areaId String @map("area_id")
-  skuId  String @map("sku_id")
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  @@map("area_sku")
-}
-
-model Area {
-  id                   String    @id @default(uuid())
-  name                 String
-  distributionCenterId String    @map("distribution_center_id")
-  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt            DateTime? @map("deleted_at") @db.Timestamp
-
-  distributionCenter DistributionCenter @relation(fields: [distributionCenterId], references: [id])
-  areaSkus           AreaSku[]
-
-  @@map("area")
 }
 
 model ProductSupplier {

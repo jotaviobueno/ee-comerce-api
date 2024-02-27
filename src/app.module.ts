@@ -16,6 +16,9 @@ import { RatingModule } from './core/modules/rating/rating.module';
 import { PageModule } from './core/modules/page/page.module';
 import { S3Module } from './core/modules/s3/s3.module';
 import { FooterModule } from './core/modules/footer/footer.module';
+import { CompanyModule } from './core/modules/company/company.module';
+import { BrandModule } from './core/modules/brand/brand.module';
+import { UserCompanyModule } from './core/modules/user-company/user-company.module';
 
 @Module({
   imports: [
@@ -34,6 +37,9 @@ import { FooterModule } from './core/modules/footer/footer.module';
     PageModule,
     S3Module,
     FooterModule,
+    CompanyModule,
+    BrandModule,
+    UserCompanyModule,
   ],
   providers: [
     {

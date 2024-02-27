@@ -20,6 +20,7 @@ export class ProductRepository extends RepositoryFactory<
         deletedAt: null,
       },
       include: {
+        brand: true,
         productCategories: {
           include: {
             category: true,
@@ -33,6 +34,7 @@ export class ProductRepository extends RepositoryFactory<
         skus: {
           where: {
             deletedAt: null,
+            isActive: true,
           },
           include: {
             color: true,
@@ -46,6 +48,7 @@ export class ProductRepository extends RepositoryFactory<
     return this.prismaService.product.findMany({
       ...query,
       include: {
+        brand: true,
         productCategories: {
           include: {
             category: true,

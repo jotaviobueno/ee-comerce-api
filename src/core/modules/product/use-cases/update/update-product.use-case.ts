@@ -4,6 +4,7 @@ import { UpdateProductDto } from 'src/domain/dtos';
 import { ProductEntity } from 'src/domain/entities';
 import { ProductRepository } from '../../product.repository';
 import { FindByIdProductUseCase } from '../find-by-id';
+import { FindByIdBrandUseCase } from 'src/core/modules/brand/use-cases';
 
 @Injectable()
 export class UpdateProductUseCase
@@ -12,10 +13,13 @@ export class UpdateProductUseCase
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly findByIdProductUseCase: FindByIdProductUseCase,
+    private readonly findByIdBrandUseCase: FindByIdBrandUseCase,
   ) {}
 
   async execute(data: UpdateProductDto): Promise<ProductEntity> {
     const product = await this.findByIdProductUseCase.execute(data.id);
+
+    if (data.brandId) await this.findByIdBrandUseCase.execute(data.brandId);
 
     const update = await this.productRepository.update({
       ...data,

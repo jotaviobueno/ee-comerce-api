@@ -7,6 +7,7 @@ export class ProductEntity implements Product {
   images: string[];
   price: number;
   storeId: string;
+  brandId: string | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;

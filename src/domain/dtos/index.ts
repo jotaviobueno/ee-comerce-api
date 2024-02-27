@@ -10,3 +10,5 @@ export * from './product-category';
 export * from './ratting';
 export * from './page';
 export * from './footer';
+export * from './brand';
+export * from './user-company';

@@ -1,10 +1,10 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
   MaxLength,
-  Min,
   MinLength,
 } from 'class-validator';
 
@@ -23,8 +23,11 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @Min(0.01)
   price: number;
+
+  @IsUUID()
+  @IsOptional()
+  brandId?: string;
 
   @IsUUID()
   @IsNotEmpty()

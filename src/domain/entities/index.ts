@@ -10,3 +10,6 @@ export * from './rating';
 export * from './auth';
 export * from './page';
 export * from './footer';
+export * from './company';
+export * from './brand';
+export * from './user-company';

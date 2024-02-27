@@ -8,6 +8,10 @@ import {
   Delete,
   Query,
   UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import {
   CreateStoreDto,
@@ -25,6 +29,7 @@ import {
 } from './use-cases';
 import { IsPublic } from '../auth/decorators';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('store')
 export class StoreController {
@@ -38,8 +43,24 @@ export class StoreController {
   ) {}
 
   @Post()
-  create(@Body() createStoreDto: CreateStoreDto) {
-    return this.createStoreUseCase.execute(createStoreDto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @Body() createStoreDto: CreateStoreDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000 }),
+          new FileTypeValidator({ fileType: 'jpg|webp|png|jpeg' }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return this.createStoreUseCase.execute({
+      file,
+      ...createStoreDto,
+    });
   }
 
   @Get(':id/products')
@@ -75,8 +96,22 @@ export class StoreController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    return this.updateStoreUseCase.execute({ ...updateStoreDto, id });
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() updateStoreDto: UpdateStoreDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000 }),
+          new FileTypeValidator({ fileType: 'jpg|webp|png|jpeg' }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return this.updateStoreUseCase.execute({ ...updateStoreDto, id, file });
   }
 
   @Delete(':id')

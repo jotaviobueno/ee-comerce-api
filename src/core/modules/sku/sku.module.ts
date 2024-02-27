@@ -9,11 +9,13 @@ import {
   FindAllSkuUseCase,
   FindByIdSkuUseCase,
   UpdateSkuUseCase,
+  SoftDeleteSkuUseCase,
 } from './use-cases';
 import { RedisModule } from 'src/infra/redis/redis.module';
+import { S3Module } from '../s3/s3.module';
 
 export const skuModuleMock = {
-  imports: [PrismaModule, ColorModule, ProductModule, RedisModule],
+  imports: [PrismaModule, ColorModule, ProductModule, RedisModule, S3Module],
   controllers: [SkuController],
   providers: [
     SkuRepository,
@@ -21,6 +23,7 @@ export const skuModuleMock = {
     FindAllSkuUseCase,
     FindByIdSkuUseCase,
     UpdateSkuUseCase,
+    SoftDeleteSkuUseCase,
   ],
   exports: [FindByIdSkuUseCase],
 };

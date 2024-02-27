@@ -16,11 +16,12 @@ import { PageModule } from '../page/page.module';
 import { ProductModule } from '../product/product.module';
 import { CategoryModule } from '../category/category.module';
 import { S3Module } from '../s3/s3.module';
+import { CompanyModule } from '../company/company.module';
 
 export const storeModuleMock = {
   imports: [
+    CompanyModule,
     PrismaModule,
-    UserModule,
     RedisModule,
     PageModule,
     ProductModule,

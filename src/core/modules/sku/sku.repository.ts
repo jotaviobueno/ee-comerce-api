@@ -6,8 +6,8 @@ import { RepositoryFactory } from 'src/common/factories';
 @Injectable()
 export class SkuRepository extends RepositoryFactory<
   SkuEntity,
-  CreateSkuDto,
-  UpdateSkuDto
+  CreateSkuDto & { documents?: string[] },
+  UpdateSkuDto & { documents?: string[] }
 > {
   constructor() {
     super('sku');

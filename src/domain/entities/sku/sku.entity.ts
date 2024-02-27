@@ -1,15 +1,18 @@
-import { Sku, SKU_SIZE } from '@prisma/client';
+import { Sku } from '@prisma/client';
 
 export class SkuEntity implements Sku {
   id: string;
-  width: number;
-  length: number;
-  height: number;
-  batchs: string[];
-  weight: number;
-  size: SKU_SIZE;
+  width: string;
+  length: string;
+  height: string;
+  weight: string;
   costPrice: number;
+  price: number;
   quantity: number;
+  upc: string | null;
+  ean: string | null;
+  isActive: boolean;
+  documents: string[];
   productId: string;
   colorId: string | null;
   createdAt: Date;

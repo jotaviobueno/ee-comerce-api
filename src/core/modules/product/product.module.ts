@@ -11,9 +11,15 @@ import {
 } from './use-cases';
 import { RedisModule } from 'src/infra/redis/redis.module';
 import { StoreModule } from '../store/store.module';
+import { BrandModule } from '../brand/brand.module';
 
 export const productModuleMock = {
-  imports: [PrismaModule, RedisModule, forwardRef(() => StoreModule)],
+  imports: [
+    PrismaModule,
+    RedisModule,
+    forwardRef(() => StoreModule),
+    BrandModule,
+  ],
   controllers: [ProductController],
   providers: [
     ProductRepository,

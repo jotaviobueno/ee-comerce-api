@@ -1,17 +1,26 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
   Query,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateSkuDto, QueryParamsDto, UpdateSkuDto } from 'src/domain/dtos';
 import { CreateSkuUseCase } from './use-cases/create/create-sku.use-case';
-import { FindAllSkuUseCase, UpdateSkuUseCase } from './use-cases';
+import {
+  FindAllSkuUseCase,
+  SoftDeleteSkuUseCase,
+  UpdateSkuUseCase,
+} from './use-cases';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('sku')
 export class SkuController {
@@ -19,11 +28,22 @@ export class SkuController {
     private readonly createSkuUseCase: CreateSkuUseCase,
     private readonly findAllSkuUseCase: FindAllSkuUseCase,
     private readonly updateSkuUseCase: UpdateSkuUseCase,
+    private readonly softDeleteSkuUseCase: SoftDeleteSkuUseCase,
   ) {}
 
   @Post()
-  create(@Body() createSkuDto: CreateSkuDto) {
-    return this.createSkuUseCase.execute(createSkuDto);
+  @UseInterceptors(FileInterceptor('files'))
+  create(
+    @Body() createSkuDto: CreateSkuDto,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 1000 })],
+        fileIsRequired: false,
+      }),
+    )
+    files?: Express.Multer.File[],
+  ) {
+    return this.createSkuUseCase.execute({ ...createSkuDto, files });
   }
 
   @Get()
@@ -34,7 +54,23 @@ export class SkuController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSkuDto: UpdateSkuDto) {
-    return this.updateSkuUseCase.execute({ ...updateSkuDto, id });
+  @UseInterceptors(FileInterceptor('files'))
+  update(
+    @Param('id') id: string,
+    @Body() updateSkuDto: UpdateSkuDto,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 1000 })],
+        fileIsRequired: false,
+      }),
+    )
+    files?: Express.Multer.File[],
+  ) {
+    return this.updateSkuUseCase.execute({ ...updateSkuDto, id, files });
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.softDeleteSkuUseCase.execute(id);
   }
 }

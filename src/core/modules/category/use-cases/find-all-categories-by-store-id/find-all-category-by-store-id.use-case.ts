@@ -4,8 +4,7 @@ import { QueryParamsDto } from 'src/domain/dtos';
 import { CategoryEntity } from 'src/domain/entities';
 import { CategoryRepository } from '../../category.repository';
 import { QueryBuilder } from 'src/common/utils';
-import { Cache } from 'cache-manager';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class FindAllCategoryByStoreIdUseCase

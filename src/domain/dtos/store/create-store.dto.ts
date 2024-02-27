@@ -9,5 +9,5 @@ export class CreateStoreDto {
 
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  companyId: string;
 }

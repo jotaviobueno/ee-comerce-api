@@ -1,61 +1,59 @@
 import {
-  ArrayMinSize,
-  IsArray,
-  IsEnum,
+  IsBoolean,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
-  MaxLength,
-  Min,
-  MinLength,
 } from 'class-validator';
-import { SKU_SIZE_ENUM } from 'src/domain/enums';
 
 export class CreateSkuDto {
+  @IsString()
+  @IsNotEmpty()
+  width: string;
+
+  @IsString()
+  @IsNotEmpty()
+  length: string;
+
+  @IsString()
+  @IsNotEmpty()
+  height: string;
+
+  @IsString()
+  @IsNotEmpty()
+  weight: string;
+
   @IsNumber()
   @IsNotEmpty()
-  width: number;
+  costPrice: number;
 
   @IsNumber()
   @IsNotEmpty()
-  length: number;
+  price: number;
 
-  @IsNumber()
+  @IsInt()
   @IsNotEmpty()
-  height: number;
+  quantity: number;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  weight: number;
+  upc: string | null;
 
-  @IsEnum(SKU_SIZE_ENUM)
+  @IsString()
   @IsNotEmpty()
-  size: SKU_SIZE_ENUM;
+  ean: string | null;
 
-  @IsArray()
-  @MinLength(3, { each: true })
-  @MaxLength(55, { each: true })
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
-  @ArrayMinSize(1)
-  batchs: string[];
-
-  @IsUUID()
+  @IsBoolean()
   @IsOptional()
-  colorId?: string;
+  isActive: boolean;
 
   @IsUUID()
   @IsNotEmpty()
   productId: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  @Min(0.01)
-  costPrice: number;
-
-  @IsNumber()
+  @IsUUID()
   @IsOptional()
-  quantity?: number;
+  colorId: string | null;
 }
