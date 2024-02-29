@@ -15,7 +15,7 @@ export class PageController {
   constructor(private readonly updatePageUseCase: UpdatePageUseCase) {}
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('files', 5))
+  @UseInterceptors(FilesInterceptor('files', 2))
   update(
     @Param('id') id: string,
     @Body() updatePageDto: UpdatePageDto,

@@ -1,4 +1,4 @@
-import { IsHexColor, IsNotEmpty, IsString } from 'class-validator';
+import { IsHexColor, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateColorDto {
   @IsString()
@@ -8,4 +8,8 @@ export class CreateColorDto {
   @IsHexColor()
   @IsNotEmpty()
   hex: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  storeId: string;
 }

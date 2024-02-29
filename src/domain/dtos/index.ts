@@ -12,3 +12,4 @@ export * from './page';
 export * from './footer';
 export * from './brand';
 export * from './user-company';
+export * from './coupon';

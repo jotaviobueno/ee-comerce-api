@@ -13,3 +13,4 @@ export * from './footer';
 export * from './company';
 export * from './brand';
 export * from './user-company';
+export * from './coupon';

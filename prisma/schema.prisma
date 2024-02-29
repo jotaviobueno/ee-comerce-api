@@ -24,6 +24,7 @@ model User {
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
   userCompanies UserCompany[]
+  Cart          Cart[]        @ignore
 
   @@map("user")
 }
@@ -69,28 +70,100 @@ model Store {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  commpany   Company    @relation(fields: [companyId], references: [id])
-  products   Product[]
-  page       Page?
-  categories Category[]
-  coupons    Coupon[]
+  commpany          Company            @relation(fields: [companyId], references: [id])
+  products          Product[]
+  page              Page?
+  categories        Category[]
+  coupons           Coupon[]           @ignore
+  colors            Color[]
+  storeSocialMedias StoreSocialMedia[]
 
   @@map("store")
 }
 
-model Page {
-  id      String   @id @default(uuid())
-  images  String[] @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/default/user/0d9cf5a5-5288-4f12-9c46-11795dc9d09c.jpeg"])
-  storeId String   @unique @map("store_id")
+model StoreSocialMedia {
+  id            String @id @default(uuid())
+  href          String
+  storeId       String @map("store_id")
+  socialMediaId String @map("social_media_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  store   Store    @relation(fields: [storeId], references: [id])
-  footers Footer[]
+  store       Store       @relation(fields: [storeId], references: [id])
+  socialMedia SocialMedia @relation(fields: [socialMediaId], references: [id])
+
+  @@map("store_social_media")
+}
+
+// TODO: ONLY ADM CREATE
+model SocialMedia {
+  // TODO: NÃO FEITO
+  id   String @id @default(uuid())
+  name String
+  icon String
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  storeSocialMedias StoreSocialMedia[]
+
+  @@map("social_midia")
+}
+
+model Page {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  storeId     String  @unique @map("store_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  store    Store     @relation(fields: [storeId], references: [id])
+  sections Section[]
+  footers  Footer[]
 
   @@map("page")
+}
+
+model Section {
+  // TODO: NÃO FEITO
+
+  id            String   @id @default(uuid())
+  title         String?
+  description   String?
+  images        String[] @default([])
+  pageId        String   @map("page_id")
+  sectionTypeId String   @map("section_type_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  section SectionType @relation(fields: [sectionTypeId], references: [id])
+  page    Page        @relation(fields: [pageId], references: [id])
+
+  @@map("section")
+}
+
+model SectionType {
+  // TODO: NÃO FEITO
+
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  sections Section[]
+
+  @@map("section_type")
 }
 
 model Brand {
@@ -101,8 +174,7 @@ model Brand {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  products Product?
+  products  Product[]
 
   @@map("brand")
 }
@@ -113,8 +185,8 @@ model Product {
   description String
   images      String[]  @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/product/images/77d06451-1f8e-4a2b-bbfe-7ff52f217873.jpeg"])
   price       Float
+  brandId     String    @map("brand_id")
   storeId     String    @map("store_id")
-  brandId     String?   @unique @map("brand_id")
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt   DateTime? @map("deleted_at") @db.Timestamp
@@ -124,8 +196,8 @@ model Product {
   skus              Sku[]
   ratings           Rating[]
   productSupplies   ProductSupplier[]
-  brand             Brand?            @relation(fields: [brandId], references: [id])
-  coupons           Coupon[]
+  brand             Brand             @relation(fields: [brandId], references: [id])
+  Cart              Cart[]            @ignore
 
   @@map("product")
 }
@@ -152,8 +224,9 @@ model Sku {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  product Product @relation(fields: [productId], references: [id])
-  color   Color?  @relation(fields: [colorId], references: [id])
+  product    Product     @relation(fields: [productId], references: [id])
+  color      Color?      @relation(fields: [colorId], references: [id])
+  orderItens OrderItem[] @ignore
 
   @@map("sku")
 }
@@ -163,39 +236,18 @@ enum STOCK_TYPE {
   OUTCOME
 }
 
-model Coupon {
-  id               String   @id @default(uuid())
-  name             String
-  code             String
-  discount         Int
-  maxUsages        Int      @map("max_usages")
-  maxUsagesPerUser Int      @default(1) @map("max_usages_per_user")
-  isActive         Boolean  @map("is_active")
-  storeId          String   @map("store_id")
-  fromAt           DateTime @map("from_at") @db.Timestamp
-  toAt             DateTime @map("to_at") @db.Timestamp
-  productId        String?  @map("product_id")
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  store   Store    @relation(fields: [storeId], references: [id])
-  product Product? @relation(fields: [productId], references: [id])
-
-  @@map("coupon")
-}
-
 model Color {
-  id   String @id @default(uuid())
-  name String
-  hex  String
+  id      String @id @default(uuid())
+  name    String
+  hex     String
+  storeId String @map("store_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  skus Sku[]
+  store Store @relation(fields: [storeId], references: [id])
+  skus  Sku[]
 
   @@map("color")
 }
@@ -266,6 +318,8 @@ model Footer {
 }
 
 model ProductSupplier {
+  // TODO: NÃO FEITO
+
   id         String   @id @default(uuid())
   product    Product  @relation(fields: [productId], references: [id])
   supplier   Supplier @relation(fields: [supplierId], references: [id])
@@ -280,6 +334,8 @@ model ProductSupplier {
 }
 
 model Supplier {
+  // TODO: NÃO FEITO
+
   id        String    @id @default(uuid())
   name      String
   phone     String?
@@ -292,4 +348,142 @@ model Supplier {
   productSupplies ProductSupplier[]
 
   @@map("supplier")
+}
+
+model Cart {
+  // TODO: NÃO FEITO
+
+  id        String @id @default(uuid())
+  productId String @map("product_id")
+  userId    String @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@map("cart")
+  @@ignore
+}
+
+model Order {
+  // TODO: NÃO FEITO
+
+  id String @id @default(uuid())
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  payment      Payment?
+  orderCoupons OrderCoupon[]
+  orderItens   OrderItem[]
+
+  @@map("order")
+  @@ignore
+}
+
+model Coupon {
+  id               String    @id @default(uuid())
+  name             String
+  description      String?
+  code             String
+  discount         Int
+  maxUsages        Int       @map("max_usages")
+  totalUsages      Int       @default(0) @map("total_usages")
+  maxUsagesPerUser Int       @default(1) @map("max_usages_per_user")
+  isActive         Boolean   @map("is_active")
+  storeId          String    @map("store_id")
+  fromAt           DateTime? @map("from_at") @db.Timestamp
+  toAt             DateTime? @map("to_at") @db.Timestamp
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  store       Store         @relation(fields: [storeId], references: [id])
+  oderCoupons OrderCoupon[] @ignore
+
+  @@map("coupon")
+}
+
+model OrderItem {
+  // TODO: NÃO FEITO
+
+  id      String @id @default(uuid())
+  orderId String @map("order_id")
+  skuId   String @map("sku_id")
+
+  quantity Int
+  price    Float
+  total    Float
+  tax      Float
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  order Order @relation(fields: [orderId], references: [id])
+  sku   Sku   @relation(fields: [skuId], references: [id])
+
+  @@map("order_item")
+  @@ignore
+}
+
+model OrderCoupon {
+  // TODO: NÃO FEITO
+
+  id        String    @id @default(uuid())
+  couponId  String    @map("coupon_id")
+  orderId   String    @map("order_id")
+  discout   Float
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id])
+
+  @@map("order_coupon")
+  @@ignore
+}
+
+model Payment {
+  // TODO: NÃO FEITO
+
+  id        String @id @default(uuid())
+  orderId   String @unique @map("order_id")
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  order Order @relation(fields: [orderId], references: [id])
+  pix   Pix?
+
+  @@map("payment")
+  @@ignore
+}
+
+model Pix {
+  // TODO: NÃO FEITO
+
+  id             String   @id @default(uuid())
+  code           String
+  image          String
+  expirationDate DateTime @map("expiration_date") @db.Timestamp
+  paymentId      String   @unique @map("payment_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  @@map("pix")
+  @@ignore
 }

@@ -6,6 +6,10 @@ export class SearchProductDto extends QueryParamsDto {
   @IsUUID()
   categoryId?: string;
 
+  @IsOptional()
+  @IsUUID()
+  brandId?: string;
+
   @IsString()
   @IsOptional()
   q?: string;

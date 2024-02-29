@@ -3,7 +3,6 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
-  IsStrongPassword,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -32,7 +31,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @IsStrongPassword()
+  @IsString()
   @IsNotEmpty()
   password: string;
 }

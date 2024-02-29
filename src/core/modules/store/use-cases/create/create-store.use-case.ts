@@ -38,7 +38,12 @@ export class CreateStoreUseCase
       companyId: company.id,
     });
 
-    await this.createPageUseCase.execute({ storeId: store.id });
+    await this.createPageUseCase.execute({
+      storeId: store.id,
+      title: 'Moda Top por um preço top!',
+      description:
+        'Vendemos apenas os produtos mais exclusivos e de alta qualidade para você. Somos os melhores, então venha comprar conosco.',
+    });
 
     return store;
   }

@@ -10,9 +10,10 @@ import {
 } from './use-cases';
 import { PrismaModule } from 'src/infra/database/prisma/prisma.module';
 import { RedisModule } from 'src/infra/redis/redis.module';
+import { StoreModule } from '../store/store.module';
 
 export const colorModuleMock = {
-  imports: [PrismaModule, RedisModule],
+  imports: [PrismaModule, RedisModule, StoreModule],
   controllers: [ColorController],
   providers: [
     ColorRepository,

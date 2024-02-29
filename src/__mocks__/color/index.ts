@@ -8,11 +8,13 @@ export const colorMock: ColorEntity = {
   createdAt: expect.any(Date),
   updatedAt: expect.any(Date),
   deletedAt: null,
+  storeId: '1',
 };
 
 export const createColorDtoMock: CreateColorDto = {
   name: 'name',
   hex: '#fffff',
+  storeId: '1',
 };
 
 export const updateColorDtoMock: UpdateColorDto = {

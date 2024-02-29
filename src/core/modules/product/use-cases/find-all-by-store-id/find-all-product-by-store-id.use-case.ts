@@ -16,6 +16,7 @@ export class FindAllProductByStoreIdUseCase
     storeId,
     categoryId,
     q,
+    brandId,
     ...data
   }: SearchProductDto & { storeId: string }): Promise<ProductEntity[]> {
     const query = new QueryBuilder(data)
@@ -26,6 +27,10 @@ export class FindAllProductByStoreIdUseCase
             categoryId,
             deletedAt: null,
           },
+        },
+        brand: brandId && {
+          id: brandId,
+          deletedAt: null,
         },
         name: q && {
           contains: q,

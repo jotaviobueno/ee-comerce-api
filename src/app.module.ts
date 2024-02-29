@@ -19,6 +19,7 @@ import { FooterModule } from './core/modules/footer/footer.module';
 import { CompanyModule } from './core/modules/company/company.module';
 import { BrandModule } from './core/modules/brand/brand.module';
 import { UserCompanyModule } from './core/modules/user-company/user-company.module';
+import { CouponModule } from './core/modules/coupon/coupon.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UserCompanyModule } from './core/modules/user-company/user-company.modu
     CompanyModule,
     BrandModule,
     UserCompanyModule,
+    CouponModule,
   ],
   providers: [
     {

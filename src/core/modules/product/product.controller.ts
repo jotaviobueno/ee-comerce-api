@@ -14,6 +14,7 @@ import {
   SoftDeleteProductUseCase,
   UpdateProductUseCase,
 } from './use-cases';
+import { IsPublic } from '../auth/decorators';
 
 @Controller('product')
 export class ProductController {
@@ -30,6 +31,7 @@ export class ProductController {
   }
 
   @Get(':id')
+  @IsPublic()
   findById(@Param('id') id: string) {
     return this.findByIdProductUseCase.execute(id);
   }

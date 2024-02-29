@@ -7,7 +7,7 @@ import { RepositoryFactory } from 'src/common/factories';
 export class PageRepository extends RepositoryFactory<
   PageEntity,
   CreatePageDto,
-  UpdatePageDto
+  UpdatePageDto & { images?: string[] }
 > {
   constructor() {
     super('page');

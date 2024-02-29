@@ -8,10 +8,14 @@ export const pageMock: PageEntity = {
   createdAt: expect.any(Date),
   updatedAt: expect.any(Date),
   deletedAt: null,
+  title: '',
+  description: '1',
 };
 
 export const createPageDtoMock: CreatePageDto = {
   storeId: '1',
+  title: '1',
+  description: '1',
 };
 
 export const updatePageDtoMock: UpdatePageDto = {
