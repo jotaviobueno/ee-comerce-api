@@ -1,10 +1,9 @@
-import { Page } from '@prisma/client';
+import { SectionType } from '@prisma/client';
 
-export class PageEntity implements Page {
+export class SectionTypeEntity implements SectionType {
   id: string;
   name: string;
   description: string | null;
-  storeId: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;

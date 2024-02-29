@@ -20,6 +20,7 @@ import { CompanyModule } from './core/modules/company/company.module';
 import { BrandModule } from './core/modules/brand/brand.module';
 import { UserCompanyModule } from './core/modules/user-company/user-company.module';
 import { CouponModule } from './core/modules/coupon/coupon.module';
+import { SectionTypeModule } from './core/modules/section-type/section-type.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CouponModule } from './core/modules/coupon/coupon.module';
     BrandModule,
     UserCompanyModule,
     CouponModule,
+    SectionTypeModule,
   ],
   providers: [
     {

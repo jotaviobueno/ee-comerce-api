@@ -3,13 +3,12 @@ import { PageEntity } from 'src/domain/entities';
 
 export const pageMock: PageEntity = {
   id: '1',
-  images: [],
   storeId: '1',
   createdAt: expect.any(Date),
   updatedAt: expect.any(Date),
   deletedAt: null,
-  title: '',
-  description: '1',
+  name: '',
+  description: '',
 };
 
 export const createPageDtoMock: CreatePageDto = {

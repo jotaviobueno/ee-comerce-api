@@ -8,6 +8,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { QueryBuilder } from 'src/common/utils';
 
 @Injectable()
+// TODO: talvez remover porque não faz sentido deixar uma find-all sku, e sim find-all-by-product-id
 export class FindAllSkuUseCase
   implements UseCaseBase<QueryParamsDto, SkuEntity[]>
 {

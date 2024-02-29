@@ -1,5 +1,5 @@
 export class CreatePageDto {
   title: string;
-  description: string;
+  description?: string;
   storeId: string;
 }
