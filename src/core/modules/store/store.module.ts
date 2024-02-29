@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { StoreController } from './store.controller';
-import { UserModule } from '../user/user.module';
 import {
   CreateStoreUseCase,
   FindByIdStoreUseCase,
   UpdateStoreUseCase,
   SoftDeleteStoreUseCase,
   FindAllProductsByStoreIdUseCase,
+  FindByIdStorePopulateUseCase,
   FindAllCategoriesByStoreIdUseCase,
 } from './use-cases';
 import { StoreRepository } from './store.repository';
@@ -35,6 +35,7 @@ export const storeModuleMock = {
     FindByIdStoreUseCase,
     UpdateStoreUseCase,
     SoftDeleteStoreUseCase,
+    FindByIdStorePopulateUseCase,
     FindAllProductsByStoreIdUseCase,
     FindAllCategoriesByStoreIdUseCase,
   ],

@@ -16,14 +16,18 @@ import { RatingModule } from './core/modules/rating/rating.module';
 import { PageModule } from './core/modules/page/page.module';
 import { S3Module } from './core/modules/s3/s3.module';
 import { FooterModule } from './core/modules/footer/footer.module';
-import { CompanyModule } from './core/modules/company/company.module';
 import { BrandModule } from './core/modules/brand/brand.module';
+import { CompanyModule } from './core/modules/company/company.module';
 import { UserCompanyModule } from './core/modules/user-company/user-company.module';
 import { CouponModule } from './core/modules/coupon/coupon.module';
-import { SectionTypeModule } from './core/modules/section-type/section-type.module';
+import { environment } from './config';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
+    DevtoolsModule.register({
+      http: environment.NODE_ENV !== 'production',
+    }),
     RedisModule,
     PrismaModule,
     HealthModule,
@@ -43,7 +47,6 @@ import { SectionTypeModule } from './core/modules/section-type/section-type.modu
     BrandModule,
     UserCompanyModule,
     CouponModule,
-    SectionTypeModule,
   ],
   providers: [
     {

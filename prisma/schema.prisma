@@ -114,56 +114,20 @@ model SocialMedia {
 }
 
 model Page {
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-  storeId     String  @unique @map("store_id")
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  images      String[] @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/page/60e939e4-530e-4c7a-9226-c874aadac0a7.avif", "https://ethereal-menu.s3.us-east-2.amazonaws.com/page/f84d78fc-21b8-44e0-8081-ac1785c77a69.jpeg"])
+  storeId     String   @unique @map("store_id")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  store    Store     @relation(fields: [storeId], references: [id])
-  sections Section[]
-  footers  Footer[]
+  store   Store    @relation(fields: [storeId], references: [id])
+  footers Footer[]
 
   @@map("page")
-}
-
-model Section {
-  // TODO: NÃO FEITO
-
-  id            String   @id @default(uuid())
-  title         String?
-  description   String?
-  images        String[] @default([])
-  pageId        String   @map("page_id")
-  sectionTypeId String   @map("section_type_id")
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  section SectionType @relation(fields: [sectionTypeId], references: [id])
-  page    Page        @relation(fields: [pageId], references: [id])
-
-  @@map("section")
-}
-
-model SectionType {
-  // TODO: NÃO FEITO
-
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp
-
-  sections Section[]
-
-  @@map("section_type")
 }
 
 model Brand {
@@ -184,7 +148,7 @@ model Product {
   description String
   images      String[]  @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/product/images/77d06451-1f8e-4a2b-bbfe-7ff52f217873.jpeg"])
   price       Float
-  brandId     String    @map("brand_id")
+  brandId     String?   @map("brand_id")
   storeId     String    @map("store_id")
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
@@ -195,7 +159,7 @@ model Product {
   skus              Sku[]
   ratings           Rating[]
   productSupplies   ProductSupplier[]
-  brand             Brand             @relation(fields: [brandId], references: [id])
+  brand             Brand?            @relation(fields: [brandId], references: [id])
   Cart              Cart[]            @ignore
 
   @@map("product")

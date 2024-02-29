@@ -38,6 +38,15 @@ export class StoreRepository extends RepositoryFactory<
         id,
         deletedAt: null,
       },
+    });
+  }
+
+  findByIdPopulate(id: string): Promise<StoreEntity | null> {
+    return this.prismaService.store.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
       include: {
         page: {
           include: {

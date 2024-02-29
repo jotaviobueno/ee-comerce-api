@@ -7,8 +7,9 @@ export const pageMock: PageEntity = {
   createdAt: expect.any(Date),
   updatedAt: expect.any(Date),
   deletedAt: null,
-  name: '',
+  title: '',
   description: '',
+  images: [],
 };
 
 export const createPageDtoMock: CreatePageDto = {

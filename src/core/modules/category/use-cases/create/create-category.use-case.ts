@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { UseCaseBase } from 'src/common/base';
 import { CreateCategoryDto } from 'src/domain/dtos';
 import { CategoryEntity } from 'src/domain/entities';
@@ -11,6 +11,7 @@ export class CreateCategoryUseCase
 {
   constructor(
     private readonly categoryRepository: CategoryRepository,
+    @Inject(forwardRef(() => FindByIdStoreUseCase))
     private readonly findByIdStoreUseCase: FindByIdStoreUseCase,
   ) {}
 

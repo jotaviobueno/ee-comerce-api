@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/infra/database/prisma/prisma.service';
 import { storeMock } from 'src/__mocks__';
 import { HttpException } from '@nestjs/common';
-import { FindByIdStoreUseCase } from './find-by-id-store.use-case';
+import { FindByIdStorePopulateUseCase } from './find-by-id-store.use-case';
 import { storeModuleMock } from '../../store.module';
 
-describe('FindByIdStoreUseCase', () => {
-  let useCase: FindByIdStoreUseCase;
+describe('FindByIdStorePopulateUseCase', () => {
+  let useCase: FindByIdStorePopulateUseCase;
   let moduleRef: TestingModule;
   let prismaService: PrismaService;
 
@@ -14,7 +14,9 @@ describe('FindByIdStoreUseCase', () => {
     moduleRef = await Test.createTestingModule(storeModuleMock).compile();
 
     prismaService = moduleRef.get<PrismaService>(PrismaService);
-    useCase = moduleRef.get<FindByIdStoreUseCase>(FindByIdStoreUseCase);
+    useCase = moduleRef.get<FindByIdStorePopulateUseCase>(
+      FindByIdStorePopulateUseCase,
+    );
   });
 
   it('should be defined', () => {

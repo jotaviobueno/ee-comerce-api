@@ -2,8 +2,9 @@ import { Page } from '@prisma/client';
 
 export class PageEntity implements Page {
   id: string;
-  name: string;
-  description: string | null;
+  title: string;
+  description: string;
+  images: string[];
   storeId: string;
   createdAt: Date;
   updatedAt: Date;

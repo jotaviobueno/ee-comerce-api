@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { UseCaseBase } from 'src/common/base';
 import { CreateProductDto } from 'src/domain/dtos';
 import { ProductEntity } from 'src/domain/entities';
@@ -12,6 +12,7 @@ export class CreateProductUseCase
 {
   constructor(
     private readonly productRepository: ProductRepository,
+    @Inject(forwardRef(() => FindByIdStoreUseCase))
     private readonly findByIdStoreUseCase: FindByIdStoreUseCase,
     private readonly findByIdBrandUseCase: FindByIdBrandUseCase,
   ) {}

@@ -13,4 +13,3 @@ export * from './footer';
 export * from './brand';
 export * from './user-company';
 export * from './coupon';
-export * from './section-type';

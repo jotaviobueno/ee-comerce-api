@@ -49,6 +49,11 @@ export class UserRepository extends RepositoryFactory<
         createdAt: true,
         updatedAt: true,
         deletedAt: true,
+        userCompanies: {
+          include: {
+            company: true,
+          },
+        },
       },
     });
   }

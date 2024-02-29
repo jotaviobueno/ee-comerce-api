@@ -21,11 +21,11 @@ import {
 } from 'src/domain/dtos';
 import {
   CreateStoreUseCase,
-  FindByIdStoreUseCase,
   UpdateStoreUseCase,
   SoftDeleteStoreUseCase,
   FindAllProductsByStoreIdUseCase,
   FindAllCategoriesByStoreIdUseCase,
+  FindByIdStorePopulateUseCase,
 } from './use-cases';
 import { IsPublic } from '../auth/decorators';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
@@ -35,7 +35,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class StoreController {
   constructor(
     private readonly createStoreUseCase: CreateStoreUseCase,
-    private readonly findByIdStoreUseCase: FindByIdStoreUseCase,
+    private readonly findByIdStorePopulateUseCase: FindByIdStorePopulateUseCase,
     private readonly updateStoreUseCase: UpdateStoreUseCase,
     private readonly softDeleteStoreUseCase: SoftDeleteStoreUseCase,
     private readonly findAllProductsByStoreIdUseCase: FindAllProductsByStoreIdUseCase,
@@ -92,7 +92,7 @@ export class StoreController {
   @Get(':id')
   @IsPublic()
   findById(@Param('id') id: string) {
-    return this.findByIdStoreUseCase.execute(id);
+    return this.findByIdStorePopulateUseCase.execute(id);
   }
 
   @Patch(':id')
