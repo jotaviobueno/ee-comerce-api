@@ -6,8 +6,8 @@ import { BrandEntity, QueryBuilderEntity } from 'src/domain/entities';
 @Injectable()
 export class BrandRepository extends RepositoryFactory<
   BrandEntity,
-  CreateBrandDto & { image?: string },
-  UpdateBrandDto & { image?: string }
+  CreateBrandDto,
+  UpdateBrandDto
 > {
   constructor() {
     super('brand');

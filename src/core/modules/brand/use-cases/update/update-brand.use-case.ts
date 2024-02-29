@@ -4,32 +4,21 @@ import { UpdateBrandDto } from 'src/domain/dtos';
 import { BrandEntity } from 'src/domain/entities';
 import { BrandRepository } from '../../brand.repository';
 import { FindByIdBrandUseCase } from '../find-by-id';
-import { UploadSingleFileUseCase } from 'src/core/modules/s3/use-cases';
 
 @Injectable()
 export class UpdateBrandUseCase
-  implements
-    UseCaseBase<UpdateBrandDto & { file?: Express.Multer.File }, BrandEntity>
+  implements UseCaseBase<UpdateBrandDto, BrandEntity>
 {
   constructor(
     private readonly brandRepository: BrandRepository,
     private readonly findByIdBrandUseCase: FindByIdBrandUseCase,
-    private readonly uploadSingleFileUseCase: UploadSingleFileUseCase,
   ) {}
 
-  async execute({
-    file,
-    ...data
-  }: UpdateBrandDto & { file?: Express.Multer.File }): Promise<BrandEntity> {
+  async execute(data: UpdateBrandDto): Promise<BrandEntity> {
     const brand = await this.findByIdBrandUseCase.execute(data.id);
-
-    const image =
-      file &&
-      (await this.uploadSingleFileUseCase.execute({ file, path: 'brand' }));
 
     const update = await this.brandRepository.update({
       ...data,
-      image,
       id: brand.id,
     });
 

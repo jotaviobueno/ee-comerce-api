@@ -6,11 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
-  FileTypeValidator,
-  MaxFileSizeValidator,
-  ParseFilePipe,
-  UploadedFile,
   Query,
 } from '@nestjs/common';
 import {
@@ -25,7 +20,6 @@ import {
   SoftDeleteBrandUseCase,
   UpdateBrandUseCase,
 } from './use-cases';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('brand')
 export class BrandController {
@@ -38,21 +32,8 @@ export class BrandController {
   ) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  create(
-    @Body() createBrandDto: CreateBrandDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1000 }),
-          new FileTypeValidator({ fileType: 'jpg|webp|png|jpeg' }),
-        ],
-        fileIsRequired: false,
-      }),
-    )
-    file?: Express.Multer.File,
-  ) {
-    return this.createBrandUseCase.execute({ ...createBrandDto, file });
+  create(@Body() createBrandDto: CreateBrandDto) {
+    return this.createBrandUseCase.execute(createBrandDto);
   }
 
   @Get()
@@ -66,22 +47,8 @@ export class BrandController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'))
-  update(
-    @Param('id') id: string,
-    @Body() updateBrandDto: UpdateBrandDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1000 }),
-          new FileTypeValidator({ fileType: 'jpg|webp|png|jpeg' }),
-        ],
-        fileIsRequired: false,
-      }),
-    )
-    file?: Express.Multer.File,
-  ) {
-    return this.updateBrandUseCase.execute({ ...updateBrandDto, file, id });
+  update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
+    return this.updateBrandUseCase.execute({ ...updateBrandDto, id });
   }
 
   @Delete(':id')
