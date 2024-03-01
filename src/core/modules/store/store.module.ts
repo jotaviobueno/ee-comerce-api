@@ -8,6 +8,7 @@ import {
   FindAllProductsByStoreIdUseCase,
   FindByIdStorePopulateUseCase,
   FindAllCategoriesByStoreIdUseCase,
+  FindAllStoreUseCase,
 } from './use-cases';
 import { StoreRepository } from './store.repository';
 import { PrismaModule } from 'src/infra/database/prisma/prisma.module';
@@ -38,6 +39,7 @@ export const storeModuleMock = {
     FindByIdStorePopulateUseCase,
     FindAllProductsByStoreIdUseCase,
     FindAllCategoriesByStoreIdUseCase,
+    FindAllStoreUseCase,
   ],
   exports: [FindByIdStoreUseCase],
 };

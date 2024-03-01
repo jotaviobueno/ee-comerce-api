@@ -74,7 +74,7 @@ model Store {
   products          Product[]
   page              Page?
   categories        Category[]
-  coupons           Coupon[]           @ignore
+  coupons           Coupon[]
   colors            Color[]
   storeSocialMedias StoreSocialMedia[]
 
@@ -340,12 +340,11 @@ model Order {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  payment      Payment?
+  payment      Payment?      @ignore
   orderCoupons OrderCoupon[]
-  orderItens   OrderItem[]
+  orderItens   OrderItem[]   @ignore
 
   @@map("order")
-  @@ignore
 }
 
 model Coupon {
@@ -366,8 +365,8 @@ model Coupon {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  store       Store         @relation(fields: [storeId], references: [id])
-  oderCoupons OrderCoupon[] @ignore
+  store        Store         @relation(fields: [storeId], references: [id])
+  orderCoupons OrderCoupon[]
 
   @@map("coupon")
 }
@@ -410,7 +409,6 @@ model OrderCoupon {
   order  Order  @relation(fields: [orderId], references: [id])
 
   @@map("order_coupon")
-  @@ignore
 }
 
 model Payment {
@@ -449,4 +447,54 @@ model Pix {
 
   @@map("pix")
   @@ignore
+}
+
+model Country {
+  id                 String  @id @default(uuid())
+  name               String
+  iso3               String  @map("iso_3")
+  iso2               String  @map("iso_2")
+  intermediaryRegion String? @map("intermediary_region")
+  subRegion          String? @map("sub_region")
+  continent          String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  states State[]
+
+  @@map("country")
+}
+
+model State {
+  id        String    @id @default(uuid())
+  name      String
+  code3     String?   @map("code_3")
+  ibgeId    String?   @map("ibge_id")
+  region    String
+  countryId String    @map("country_id")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  country Country @relation(fields: [countryId], references: [id])
+  cities  City[]
+
+  @@map("state")
+}
+
+model City {
+  id      String  @id @default(uuid())
+  name    String
+  ibgeId  String? @map("ibge_id")
+  stateId String  @map("state_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  state State @relation(fields: [stateId], references: [id])
+
+  @@map("city")
 }

@@ -26,6 +26,7 @@ import {
   FindAllProductsByStoreIdUseCase,
   FindAllCategoriesByStoreIdUseCase,
   FindByIdStorePopulateUseCase,
+  FindAllStoreUseCase,
 } from './use-cases';
 import { IsPublic } from '../auth/decorators';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
@@ -40,6 +41,7 @@ export class StoreController {
     private readonly softDeleteStoreUseCase: SoftDeleteStoreUseCase,
     private readonly findAllProductsByStoreIdUseCase: FindAllProductsByStoreIdUseCase,
     private readonly findAllCategoriesByStoreIdUseCase: FindAllCategoriesByStoreIdUseCase,
+    private readonly findAllStoreUseCase: FindAllStoreUseCase,
   ) {}
 
   @Post()
@@ -61,6 +63,12 @@ export class StoreController {
       file,
       ...createStoreDto,
     });
+  }
+
+  @Get()
+  @IsPublic()
+  findAll(@Query() queryParams: QueryParamsDto) {
+    return this.findAllStoreUseCase.execute(queryParams);
   }
 
   @Get(':id/products')
