@@ -24,6 +24,7 @@ model User {
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
   userCompanies UserCompany[]
+  userRoles     UserRole[]
   Cart          Cart[]        @ignore
 
   @@map("user")
@@ -77,6 +78,7 @@ model Store {
   coupons           Coupon[]
   colors            Color[]
   storeSocialMedias StoreSocialMedia[]
+  brands            Brand[]
 
   @@map("store")
 }
@@ -134,64 +136,60 @@ model Brand {
   id   String @id @default(uuid())
   name String
 
+  storeId   String    @map("store_id")
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
   products  Product[]
 
+  store Store @relation(fields: [storeId], references: [id])
+
   @@map("brand")
 }
 
 model Product {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String
-  images      String[]  @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/product/images/77d06451-1f8e-4a2b-bbfe-7ff52f217873.jpeg"])
-  price       Float
-  brandId     String?   @map("brand_id")
-  storeId     String    @map("store_id")
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamp
+  images      String[] @default(["https://ethereal-menu.s3.us-east-2.amazonaws.com/product/images/77d06451-1f8e-4a2b-bbfe-7ff52f217873.jpeg"])
 
-  store             Store             @relation(fields: [storeId], references: [id])
-  productCategories ProductCategory[]
-  skus              Sku[]
-  ratings           Rating[]
-  productSupplies   ProductSupplier[]
-  brand             Brand?            @relation(fields: [brandId], references: [id])
-  Cart              Cart[]            @ignore
+  price Float
+  cost  Float
 
-  @@map("product")
-}
+  brandId  String? @map("brand_id")
+  storeId  String  @map("store_id")
+  parentId String? @map("parent_id")
+  colorId  String  @map("color_id")
 
-model Sku {
-  id        String  @id @default(uuid())
-  width     String
-  length    String
-  height    String
-  weight    String
-  costPrice Float   @map("cost_price")
-  price     Float
-  quantity  Int     @default(0)
-  upc       String?
-  ean       String?
-  isActive  Boolean @default(true) @map("is_active")
+  // SKU
+  upc String?
+  ean String?
 
-  documents String[] @default([])
+  width  String?
+  length String?
+  height String?
+  weight String?
+  size   String?
 
-  productId String  @map("product_id")
-  colorId   String? @map("color_id")
+  isActive Boolean @default(true) @map("is_active")
+
+  stock Int @default(0)
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  product    Product     @relation(fields: [productId], references: [id])
-  color      Color?      @relation(fields: [colorId], references: [id])
-  orderItens OrderItem[] @ignore
+  parent            Product?          @relation("ChildrenProduct", fields: [parentId], references: [id])
+  children          Product[]         @relation("ChildrenProduct")
+  store             Store             @relation(fields: [storeId], references: [id])
+  productCategories ProductCategory[]
+  ratings           Rating[]
+  productSupplies   ProductSupplier[]
+  brand             Brand?            @relation(fields: [brandId], references: [id])
+  color             Color             @relation(fields: [colorId], references: [id])
+  Cart              Cart[]            @ignore
 
-  @@map("sku")
+  @@map("product")
 }
 
 enum STOCK_TYPE {
@@ -209,8 +207,8 @@ model Color {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
-  store Store @relation(fields: [storeId], references: [id])
-  skus  Sku[]
+  store    Store     @relation(fields: [storeId], references: [id])
+  products Product[]
 
   @@map("color")
 }
@@ -376,7 +374,6 @@ model OrderItem {
 
   id      String @id @default(uuid())
   orderId String @map("order_id")
-  skuId   String @map("sku_id")
 
   quantity Int
   price    Float
@@ -388,7 +385,6 @@ model OrderItem {
   deletedAt DateTime? @map("deleted_at") @db.Timestamp
 
   order Order @relation(fields: [orderId], references: [id])
-  sku   Sku   @relation(fields: [skuId], references: [id])
 
   @@map("order_item")
   @@ignore
@@ -497,4 +493,63 @@ model City {
   state State @relation(fields: [stateId], references: [id])
 
   @@map("city")
+}
+
+model UserRole {
+  id       String  @id @default(uuid())
+  userId   String  @map("user_id")
+  roleId   String  @unique @map("role_id")
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@map("user_role")
+}
+
+model Role {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  userRole        UserRole?
+  rolePermissions RolePermission[]
+
+  @@map("role")
+}
+
+model RolePermission {
+  id           String @id @default(uuid())
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@map("role_permission")
+}
+
+model Permission {
+  id   String @id @default(uuid())
+  name String @unique
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp
+
+  rolePermissions RolePermission[]
+
+  @@map("permission")
 }

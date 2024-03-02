@@ -17,6 +17,7 @@ export class ProductRepository extends RepositoryFactory<
     return this.prismaService.product.findFirst({
       where: {
         id,
+        isActive: true,
         deletedAt: null,
       },
       include: {
@@ -31,13 +32,13 @@ export class ProductRepository extends RepositoryFactory<
             deletedAt: null,
           },
         },
-        skus: {
+        children: {
           where: {
-            deletedAt: null,
             isActive: true,
+            deletedAt: null,
           },
           include: {
-            color: true,
+            brand: true,
           },
         },
       },
@@ -59,12 +60,9 @@ export class ProductRepository extends RepositoryFactory<
             deletedAt: null,
           },
         },
-        skus: {
-          where: {
-            deletedAt: null,
-          },
+        children: {
           include: {
-            color: true,
+            brand: true,
           },
         },
       },

@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -25,6 +26,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   price: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  cost: number;
+
   @IsUUID()
   @IsOptional()
   brandId?: string;
@@ -32,4 +37,48 @@ export class CreateProductDto {
   @IsUUID()
   @IsNotEmpty()
   storeId: string;
+
+  @IsUUID()
+  @IsOptional()
+  parentId?: string;
+
+  @IsUUID()
+  @IsOptional()
+  colorId?: string;
+
+  @IsString()
+  @IsOptional()
+  upc?: string;
+
+  @IsString()
+  @IsOptional()
+  ean?: string;
+
+  @IsString()
+  @IsOptional()
+  width?: string;
+
+  @IsString()
+  @IsOptional()
+  length?: string;
+
+  @IsString()
+  @IsOptional()
+  height?: string;
+
+  @IsString()
+  @IsOptional()
+  weight?: string;
+
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  stock: number;
 }

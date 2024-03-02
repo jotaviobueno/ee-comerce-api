@@ -6,16 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
 } from '@nestjs/common';
-import {
-  CreateBrandDto,
-  QueryParamsDto,
-  UpdateBrandDto,
-} from 'src/domain/dtos';
+import { CreateBrandDto, UpdateBrandDto } from 'src/domain/dtos';
 import {
   CreateBrandUseCase,
-  FindAllBrandUseCase,
   FindByIdBrandUseCase,
   SoftDeleteBrandUseCase,
   UpdateBrandUseCase,
@@ -25,7 +19,6 @@ import {
 export class BrandController {
   constructor(
     private readonly createBrandUseCase: CreateBrandUseCase,
-    private readonly findAllBrandUseCase: FindAllBrandUseCase,
     private readonly findByIdBrandUseCase: FindByIdBrandUseCase,
     private readonly softDeleteBrandUseCase: SoftDeleteBrandUseCase,
     private readonly updateBrandUseCase: UpdateBrandUseCase,
@@ -34,11 +27,6 @@ export class BrandController {
   @Post()
   create(@Body() createBrandDto: CreateBrandDto) {
     return this.createBrandUseCase.execute(createBrandDto);
-  }
-
-  @Get()
-  findAll(@Query() queryParamsDto: QueryParamsDto) {
-    return this.findAllBrandUseCase.execute(queryParamsDto);
   }
 
   @Get(':id')

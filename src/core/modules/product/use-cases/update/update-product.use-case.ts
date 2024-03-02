@@ -19,6 +19,8 @@ export class UpdateProductUseCase
   async execute(data: UpdateProductDto): Promise<ProductEntity> {
     const product = await this.findByIdProductUseCase.execute(data.id);
 
+    if (data.parentId) await this.findByIdProductUseCase.execute(data.parentId);
+
     if (data.brandId) await this.findByIdBrandUseCase.execute(data.brandId);
 
     const update = await this.productRepository.update({

@@ -12,6 +12,18 @@ export const productMock: ProductEntity = {
   createdAt: expect.any(Date),
   updatedAt: expect.any(Date),
   deletedAt: null,
+  cost: 0,
+  parentId: '',
+  colorId: '',
+  upc: '',
+  ean: '',
+  width: '',
+  length: '',
+  height: '',
+  weight: '',
+  size: '',
+  isActive: false,
+  stock: 0,
 };
 
 export const createProductDtoMock: CreateProductDto = {
@@ -19,6 +31,8 @@ export const createProductDtoMock: CreateProductDto = {
   description: 'description',
   price: 20,
   storeId: '1',
+  cost: 0,
+  stock: 0,
 };
 
 export const updateProductDtoMock: UpdateProductDto = {

@@ -4,7 +4,6 @@ import { HealthModule } from './core/modules/health/health.module';
 import { UserModule } from './core/modules/user/user.module';
 import { StoreModule } from './core/modules/store/store.module';
 import { ProductModule } from './core/modules/product/product.module';
-import { SkuModule } from './core/modules/sku/sku.module';
 import { ColorModule } from './core/modules/color/color.module';
 import { PrismaModule } from './infra/database/prisma/prisma.module';
 import { RedisModule } from './infra/redis/redis.module';
@@ -34,7 +33,6 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     UserModule,
     StoreModule,
     ProductModule,
-    SkuModule,
     ColorModule,
     AuthModule,
     CategoryModule,

@@ -14,6 +14,7 @@ export class QueryBuilder {
 
   pagination() {
     const { page, pageSize } = this.queryParams;
+
     const skip =
       (parseInt(page.toString()) - 1) * parseInt(pageSize.toString());
 

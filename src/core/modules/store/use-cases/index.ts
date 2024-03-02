@@ -6,3 +6,4 @@ export * from './find-all-products-by-store-id';
 export * from './find-all-categories-by-store-id';
 export * from './find-by-id';
 export * from './find-all';
+export * from './find-all-brand-by-store-id';

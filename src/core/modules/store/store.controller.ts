@@ -27,6 +27,7 @@ import {
   FindAllCategoriesByStoreIdUseCase,
   FindByIdStorePopulateUseCase,
   FindAllStoreUseCase,
+  FindAllBrandsByStoreIdUseCase,
 } from './use-cases';
 import { IsPublic } from '../auth/decorators';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
@@ -42,6 +43,7 @@ export class StoreController {
     private readonly findAllProductsByStoreIdUseCase: FindAllProductsByStoreIdUseCase,
     private readonly findAllCategoriesByStoreIdUseCase: FindAllCategoriesByStoreIdUseCase,
     private readonly findAllStoreUseCase: FindAllStoreUseCase,
+    private readonly findAllBrandsByStoreIdUseCase: FindAllBrandsByStoreIdUseCase,
   ) {}
 
   @Post()
@@ -71,8 +73,24 @@ export class StoreController {
     return this.findAllStoreUseCase.execute(queryParams);
   }
 
+  @Get(':id/brands')
+  @IsPublic()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
+  findAllBrandsByStoreId(
+    @Query() queryParams: QueryParamsDto,
+    @Param('id') id: string,
+  ) {
+    return this.findAllBrandsByStoreIdUseCase.execute({
+      ...queryParams,
+      storeId: id,
+    });
+  }
+
   @Get(':id/products')
   @IsPublic()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(15)
   findAllProductsByStoreId(
     @Query() queryParams: SearchProductDto,
     @Param('id') id: string,

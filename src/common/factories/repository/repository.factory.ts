@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { QueryBuilderEntity } from 'src/domain/entities';
 import { PrismaService } from 'src/infra/database/prisma/prisma.service';
 
 export class RepositoryFactory<K, T = void, J = void> {
@@ -25,6 +26,10 @@ export class RepositoryFactory<K, T = void, J = void> {
         ...data,
       },
     });
+  }
+
+  count({ where }: QueryBuilderEntity): Promise<number> {
+    return this.prismaService[this.model].count({ where });
   }
 
   softDelete(id: string): Promise<K | null> {
