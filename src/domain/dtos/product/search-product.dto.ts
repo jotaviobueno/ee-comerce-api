@@ -1,14 +1,19 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsOptional, IsString, IsUUID } from 'class-validator';
 import { QueryParamsDto } from '../shared';
+import { Transform } from 'class-transformer';
 
 export class SearchProductDto extends QueryParamsDto {
   @IsOptional()
-  @IsUUID()
-  categoryId?: string;
+  @IsArray()
+  @IsUUID(4, { each: true })
+  @Transform(({ value }) => value.split(','))
+  categoryId?: string[];
 
   @IsOptional()
-  @IsUUID()
-  brandId?: string;
+  @IsArray()
+  @IsUUID(4, { each: true })
+  @Transform(({ value }) => value.split(','))
+  brandId?: string[];
 
   @IsOptional()
   @IsUUID()

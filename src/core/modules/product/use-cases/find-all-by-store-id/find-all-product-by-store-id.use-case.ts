@@ -1,10 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UseCaseBase } from 'src/common/base';
 import { SearchProductDto } from 'src/domain/dtos';
 import { ProductRepository } from '../../product.repository';
 import { QueryBuilder } from 'src/common/utils';
 import { FindAllResultEntity, ProductEntity } from 'src/domain/entities';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class FindAllProductByStoreIdUseCase
@@ -14,11 +13,7 @@ export class FindAllProductByStoreIdUseCase
       FindAllResultEntity<ProductEntity>
     >
 {
-  constructor(
-    private readonly productRepository: ProductRepository,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
-  ) {}
+  constructor(private readonly productRepository: ProductRepository) {}
 
   async execute({
     storeId,
@@ -35,13 +30,6 @@ export class FindAllProductByStoreIdUseCase
   }: SearchProductDto & { storeId: string }): Promise<
     FindAllResultEntity<ProductEntity>
   > {
-    const cache =
-      await this.cacheManager.get<FindAllResultEntity<ProductEntity> | null>(
-        `${storeId}_products`,
-      );
-
-    if (cache) return cache;
-
     const query = new QueryBuilder(data)
       .where({
         parentId: null,
@@ -50,7 +38,9 @@ export class FindAllProductByStoreIdUseCase
         colorId,
         productCategories: categoryId && {
           some: {
-            categoryId,
+            categoryId: {
+              in: categoryId,
+            },
             deletedAt: null,
           },
         },
@@ -70,9 +60,12 @@ export class FindAllProductByStoreIdUseCase
           equals: width,
         },
         brand: brandId && {
-          id: brandId,
+          id: {
+            in: brandId,
+          },
           deletedAt: null,
         },
+
         name: q && {
           contains: q,
         },
@@ -93,8 +86,6 @@ export class FindAllProductByStoreIdUseCase
       totalPage: Math.ceil(total / data.pageSize),
       pageSize: data.pageSize,
     };
-
-    await this.cacheManager.set(`${storeId}_products`, result);
 
     return result;
   }

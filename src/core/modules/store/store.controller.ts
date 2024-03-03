@@ -89,8 +89,6 @@ export class StoreController {
 
   @Get(':id/products')
   @IsPublic()
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(15)
   findAllProductsByStoreId(
     @Query() queryParams: SearchProductDto,
     @Param('id') id: string,
